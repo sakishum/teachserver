@@ -1,7 +1,7 @@
 CPP=g++ 
 CC=gcc
-CFLAGS=-Wall -Werror -g 
-LINKS	= -lpthread -lrt -lev
+CFLAGS=-Wall -Werror -g
+LINKS	= -lpthread -lrt -lev -lglog
 
 OBJS	= ThreadPool.o \
 		  ProcessManager.o \

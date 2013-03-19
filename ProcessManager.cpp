@@ -1,5 +1,4 @@
 #include "ProcessManager.h"
-int work_flag; 
 ProcessManager::ProcessManager() { thrpool_ = new ThreadPool(20);
 }
 
@@ -21,15 +20,23 @@ int ProcessManager::process_logic(int argc, char** argv) {
   int pid = 0;
   switch(opt){
     case 's':
-      if(true != lock(LOCK_NOWAIT)) {
-        printf("Process already running!\n");
-        return 0;
-      } 
       pid = fork();
       if(0 < pid){
         return 0;
       }
+      if(true != lock(LOCK_NOWAIT)) {
+        printf("Process already running!\n");
+        return 0;
+      } 
     case 'd':
+      //初始化日志
+      google::InitGoogleLogging(argv[0]);
+      google::SetLogDestination(google::INFO, "./logs/info");
+      google::SetLogDestination(google::WARNING, "./logs/warning");
+      google::SetLogDestination(google::ERROR, "./logs/error");
+      google::SetStderrLogging(google::ERROR + 1);
+      //配置输出到标准错误的最低日志级别,使error日志不打屏
+      system("mkdir -p logs");
       this->run();
       break;
     case 'u':
@@ -39,9 +46,7 @@ int ProcessManager::process_logic(int argc, char** argv) {
         printf("No process!\n");
       } else {
         printf("Find process! stopping...\n");
-        char buf[1024] = {0};
-        snprintf(buf, 1024, "killall %s", argv[0]);
-        system(buf);
+        system("cat .lock|xargs kill -15");
       }  
       printf("stop\n");
       break;
@@ -55,14 +60,15 @@ int ProcessManager::process_logic(int argc, char** argv) {
 
 void ProcessManager::sig_term(int signo) {
   printf("get exit signal\n");
-  work_flag = 0;
-  //raise(SIGKILL);
+  LOG(INFO) << "server stoped";
+  raise(SIGKILL);
   return;
 }
 
 int ProcessManager::run() {
-  work_flag = 1;
   printf("run\n");
+
+  LOG(INFO) << "server started";
   thrpool_->start();
   Evloop* evloop = new Evloop();
   RecvTask* p = new RecvTask();
@@ -71,11 +77,10 @@ int ProcessManager::run() {
   thrpool_->push_task(p);
   thrpool_->push_task(p);
 
-  while(0 != work_flag) {
+  while (true) {
     sleep(3);
   }
   thrpool_->kill();
-  printf("exit\n");
   return 0;
 }
 
@@ -86,11 +91,9 @@ bool ProcessManager::lock(int mode) {
     lockfd_ = open("./.lock", O_RDWR|O_CREAT, 0640);
   }
   if (lockfd_ < 0) {
-    //printf("open file error!\n");
     return false;
   }
   if (0 != flock(lockfd_, mode)) {
-    //printf("lock file error!\n");
     return false;
   }
   if (UNLOCK == mode) {
@@ -99,7 +102,6 @@ bool ProcessManager::lock(int mode) {
   else {
     ftruncate(lockfd_, 0); 
     write(lockfd_, szPid, strlen(szPid));
-    //printf("Lock success![%d]\n", lockfd_);
   }
   return true;
 }

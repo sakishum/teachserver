@@ -14,6 +14,7 @@ int Evloop::startlisten() {
     servaddr.sin_addr.s_addr = inet_addr(SERVADDR);
     servaddr.sin_port = htons(SERVPORT);
     if (0 != bind(listenfd_, (struct sockaddr*)&servaddr, sizeof(struct sockaddr))) {
+        LOG(ERROR) << "bind error";
         return -1;
     }
     listen(listenfd_, 10);
@@ -28,6 +29,7 @@ int Evloop::work() {
     ev_io_init(&ev_io_watcher, accept_cb, listenfd_, EV_READ);
 
     ev_io_start(loop,&ev_io_watcher); 
+    LOG(INFO)<< "ev_loop started";
 
     ev_loop(loop, 0);
 
