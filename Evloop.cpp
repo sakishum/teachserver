@@ -37,6 +37,9 @@ int Evloop::work() {
     return 0;
 }
 
+/**
+ * @brief 接受客户端回调函数
+ */
 void Evloop::accept_cb(struct ev_loop *loop, ev_io *w, int revents) {
     struct sockaddr_in clientaddr;
     socklen_t socklen = 0;
@@ -44,18 +47,25 @@ void Evloop::accept_cb(struct ev_loop *loop, ev_io *w, int revents) {
     if ( 0 >= newfd) {
         return;
     }
+    LOG(INFO) << " get a new client fd = " << newfd ;
     ev_io* ev_io_watcher = (ev_io*)malloc(sizeof(ev_io));
     ev_io_init(ev_io_watcher, recv_cb, newfd, EV_READ);
     ev_io_start(loop, ev_io_watcher);
     return;
 }
 
+/**
+ * @brief 接受数据回调函数
+ */
 void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
+    //从内存池中取出一个buf
     Buf* buf = SINGLE->bufpool.malloc();
     if (NULL == buf) {
         printf("null buf\n");
         return;
     }
+
+    //收包头长度
     int i = recv_v(w->fd, buf->ptr(), sizeof(int));
     if ( 0 >= i) {
         printf("disconnect\n");
@@ -65,11 +75,12 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
         return;
     }
 
+    //收包体
     int *p = (int*)buf->ptr();
     i = recv_v(w->fd, (char*)buf->ptr() + sizeof(int), *p);
 
     buf->setfd(w->fd);
+    //将buf压入队列
     SINGLE->sockqueue.enqueue(buf);
-    printf("xxxxxxx\n");
     return;
 }

@@ -11,21 +11,13 @@ OBJS	= ThreadPool.o \
 		  RecvTask.o \
 		  main.o
 
-EXE=a.out
+EXE=server.out
 
-BASE_DIR = .
-BASE_INC = $(BASE_DIR)
-BASE_SRC = $(BASE_DIR)
-VPATH		 = $(BASE_DIR)
+VPATH		 = .
 
 INC=-I.\
-	-I$(BASE_INC) \
-	-I$(BASE_SRC) \
-#-I$(ACE_ROOT)
 
 LIB=-L.\
-#-L$(ACE_ROOT)/lib
-
 
 all:clean $(EXE)
 
@@ -42,3 +34,5 @@ clean:
 	rm -rf $(OBJS) 
 	rm -rf $(EXE) 
 	rm -rf core*
+	rm -rf logs
+	rm -f .lock

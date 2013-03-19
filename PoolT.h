@@ -16,12 +16,14 @@ using namespace std;
 /**
  * @class   PoolT
  * @brief   memory pool
+ * @  简易内存池
  */
 template<typename TYPE>
 class PoolT {
 public:
     /**
      * @brief   constructor
+     * @param[in] n 初始化对象的个数，即池子大小
      */
     PoolT(int n = 1000) {
         this->size_ = n;
@@ -41,6 +43,10 @@ public:
         }
     }
 
+    /**
+     * @brief 分配内存
+     * @retval 分配好的内存对象指针
+     */
     TYPE* malloc() {
         MutexLockGuard guard(lock_);
         TYPE* p = queue_.front();
@@ -48,14 +54,28 @@ public:
         return p;
     }
 
+    /**
+     * @brief 释放内存
+     */
     int free(TYPE* i) {
         MutexLockGuard guard(lock_);
         queue_.push(i);
         return 0;
     }
 
-    size_t size() {
-        return size;
+    /**
+     * @retval  池子大小
+     */
+    int size() {
+        return size_;
+    }
+
+    /**
+     * @retval  池子大小
+     */
+    int used() {
+      MutexLockGuard guard(lock_);
+      return size_ - queue_.size();
     }
 
 private:

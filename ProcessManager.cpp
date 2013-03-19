@@ -1,16 +1,17 @@
 #include "ProcessManager.h"
-ProcessManager::ProcessManager() { thrpool_ = new ThreadPool(20);
+ProcessManager::ProcessManager() { 
+  thrpool_ = new ThreadPool(20);
 }
 
 ProcessManager::~ProcessManager() {
 }
 
 int ProcessManager::process_logic(int argc, char** argv) {
+  //设置信号处理
   signal(SIGINT, SIG_IGN);
   signal(SIGPIPE, SIG_IGN);
   signal(SIGQUIT, SIG_IGN);
   signal(SIGTERM, sig_term);
-
 
   int opt = getopt(argc, argv, "uds");
   if ( -1 == opt) {
@@ -37,6 +38,7 @@ int ProcessManager::process_logic(int argc, char** argv) {
       google::SetStderrLogging(google::ERROR + 1);
       //配置输出到标准错误的最低日志级别,使error日志不打屏
       system("mkdir -p logs");
+      //启动
       this->run();
       break;
     case 'u':
@@ -53,7 +55,6 @@ int ProcessManager::process_logic(int argc, char** argv) {
     default:
       break;
   }
-
 
   return 0;
 }
@@ -73,17 +74,22 @@ int ProcessManager::run() {
   Evloop* evloop = new Evloop();
   RecvTask* p = new RecvTask();
 
-  thrpool_->push_task(evloop);
-  thrpool_->push_task(p);
+  thrpool_->push_task(evloop);//监听和数据接收线程
+  thrpool_->push_task(p);//数据处理线程
   thrpool_->push_task(p);
 
+  //主线程死循环
   while (true) {
     sleep(3);
   }
+
   thrpool_->kill();
   return 0;
 }
 
+/**
+ * @brief 文件锁
+ */
 bool ProcessManager::lock(int mode) {
   char szPid[32] = {0};
   snprintf(szPid, 32, "%ld", (long)getpid());
@@ -105,4 +111,3 @@ bool ProcessManager::lock(int mode) {
   }
   return true;
 }
-
