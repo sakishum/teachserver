@@ -66,7 +66,9 @@ void ProcessManager::sig_term(int signo) {
   raise(SIGKILL);
   return;
 }
-
+/**
+ *主循环
+ */
 int ProcessManager::run() {
   printf("run\n");
 
