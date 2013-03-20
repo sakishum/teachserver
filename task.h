@@ -1,6 +1,8 @@
 #ifndef _TASK_H_
 #define _TASK_H_
 #include <glog/logging.h>
+
+#include "database.h"
 /**
  * @class task基类
  */
