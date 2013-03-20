@@ -12,7 +12,7 @@ int Evloop::startlisten() {
     struct sockaddr_in servaddr;
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(SERVADDR);
-    servaddr.sin_port = htons(SERVPORT);
+    servaddr.sin_port = htons(CONFIG->server_port);
     if (0 != bind(listenfd_, (struct sockaddr*)&servaddr, sizeof(struct sockaddr))) {
         LOG(ERROR) << "bind error";
         return -1;

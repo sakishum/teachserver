@@ -21,6 +21,8 @@
 
 #include <glog/logging.h>
 
+#include "Config.h"
+
 using namespace sql;
 using namespace std;
 
