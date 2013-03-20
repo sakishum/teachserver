@@ -48,6 +48,7 @@ void Evloop::accept_cb(struct ev_loop *loop, ev_io *w, int revents) {
         return;
     }
     LOG(INFO) << " get a new client fd = " << newfd ;
+    Evloop::setnoblock(newfd);
     ev_io* ev_io_watcher = (ev_io*)malloc(sizeof(ev_io));
     ev_io_init(ev_io_watcher, recv_cb, newfd, EV_READ);
     ev_io_start(loop, ev_io_watcher);
@@ -81,6 +82,11 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
 
     buf->setfd(w->fd);
     //将buf压入队列
-    SINGLE->sockqueue.enqueue(buf);
+    SINGLE->recvqueue.enqueue(buf);
     return;
 }
+
+void Evloop::setnoblock(int fd) {
+  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+}
+

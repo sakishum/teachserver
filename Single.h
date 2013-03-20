@@ -5,12 +5,16 @@
 #include "QueueT.h"
 #include "PoolT.h"
 #include "Buf.h"
+#include "twomapT.h"
 class Single {
     public:
         ~Single();
         static class Single* instance();
-        QueueT<Buf*> sockqueue;
+        QueueT<Buf*> recvqueue;
+        QueueT<Buf*> sendqueue;
         PoolT<Buf> bufpool;
+        twomapT<int, int> mapidfd;
+
 
     private:
         Single();

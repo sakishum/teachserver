@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <sys/errno.h>
+#include <sys/fcntl.h>
 #include <list>
 #include <ev.h>
 
@@ -26,6 +27,7 @@ class Evloop: public task{
         virtual int work();
         static void accept_cb(struct ev_loop *loop, ev_io *w, int revents);
         static void recv_cb(struct ev_loop *loop, ev_io *w, int revents);
+        static void setnoblock(int fd);
 
     private:
         int recvbuf(int fd);

@@ -1,6 +1,6 @@
 #include "ProcessManager.h"
 ProcessManager::ProcessManager() { 
-  thrpool_ = new ThreadPool(20);
+  thrpool_ = new ThreadPool(10);
 }
 
 ProcessManager::~ProcessManager() {
@@ -30,8 +30,7 @@ int ProcessManager::process_logic(int argc, char** argv) {
         return 0;
       } 
     case 'd':
-      //初始化日志
-      google::InitGoogleLogging(argv[0]);
+      //初始化日志 google::InitGoogleLogging(argv[0]);
       google::SetLogDestination(google::INFO, "./logs/info");
       google::SetLogDestination(google::WARNING, "./logs/warning");
       google::SetLogDestination(google::ERROR, "./logs/error");
@@ -74,11 +73,14 @@ int ProcessManager::run() {
   LOG(INFO) << "server started";
   thrpool_->start();
   Evloop* evloop = new Evloop();
-  RecvTask* p = new RecvTask();
+  RecvTask* precv = new RecvTask();
+  SendTask* psend = new SendTask();
 
   thrpool_->push_task(evloop);//监听和数据接收线程
-  thrpool_->push_task(p);//数据处理线程
-  thrpool_->push_task(p);
+  thrpool_->push_task(precv);//数据处理线程
+  thrpool_->push_task(precv);//数据处理线程
+  thrpool_->push_task(psend);
+  thrpool_->push_task(psend);
 
   //主线程死循环
   while (true) {

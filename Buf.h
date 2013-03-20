@@ -41,10 +41,18 @@ public:
     void setfd(int fd) {
         fd_ = fd;
     }
+
+    int getid() {
+        return id_;
+    }
+    void setid(int id) {
+        id_ = id;
+    }
 private:
     void* ptr_;
     size_t size_;
     size_t used_;
     int fd_;
+    int id_;
 };
 #endif

@@ -11,6 +11,7 @@
 #include "ThreadPool.h"
 #include "task.h"
 #include "RecvTask.h"
+#include "SendTask.h"
 #include "Evloop.h"
 #include "Buf.h"
 enum {

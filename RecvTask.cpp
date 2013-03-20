@@ -8,7 +8,7 @@ RecvTask::~RecvTask() {
 int RecvTask::work() {
     while(true){
         Buf* p = NULL;
-        if (0 != SINGLE->sockqueue.dequeue(p, 3)) {
+        if (0 != SINGLE->recvqueue.dequeue(p, 3)) {
             continue;
         }
         printf("get msg: %s\n", (char*)p->ptr());

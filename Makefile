@@ -9,11 +9,12 @@ OBJS	= ThreadPool.o \
 		  Sock.o \
 		  Evloop.o \
 		  RecvTask.o \
+		  SendTask.o \
 		  database.o \
 		  Config.o \
 		  main.o
 
-EXE=server.out
+EXE=server
 
 VPATH		 = .
 

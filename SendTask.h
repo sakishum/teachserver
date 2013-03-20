@@ -1,5 +1,5 @@
-#ifndef RECVTASK_H_
-#define RECVTASK_H_
+#ifndef SENDTASK_H_
+#define SENDTASK_H_
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -12,10 +12,10 @@
 #include "Sock.h"
 #include "Single.h"
 #include "Buf.h"
-class RecvTask: public task{
+class SendTask: public task{
     public:
-        RecvTask();
-        ~RecvTask();
+        SendTask();
+        ~SendTask();
         virtual int work();
 };
 #endif
