@@ -1,7 +1,7 @@
 CPP=g++ 
 CC=gcc
 CFLAGS=-Wall -Werror -g
-LINKS	= -lpthread -lrt -lev -lglog
+LINKS	= -lpthread -lrt -lev -lglog -lmysqlcppconn
 
 OBJS	= ThreadPool.o \
 		  ProcessManager.o \
@@ -9,6 +9,7 @@ OBJS	= ThreadPool.o \
 		  Sock.o \
 		  Evloop.o \
 		  RecvTask.o \
+		  database.o \
 		  main.o
 
 EXE=server.out
