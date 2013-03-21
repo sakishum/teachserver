@@ -1,5 +1,7 @@
 #ifndef _BUF_H_
 #define _BUF_H_
+
+
 #include <string.h>
 class Buf {
 public:
