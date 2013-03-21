@@ -88,7 +88,7 @@ int ProcessManager::run() {
 
   //主线程死循环
   while (true) {
-      LOG(INFO) << "main loop!"<<endl;;
+    cout<<"new client count = "<<evloop->getClientCount()<<endl;
     sleep(3);
   }
 

@@ -4,10 +4,11 @@ CFLAGS=-Wall -Werror -g
 LINKS	= -lpthread -lrt -lev -lglog -lmysqlcppconn -llua5.2 -lgtest
 
 OBJS	= twomapT_unittest.o \
+		  PoolT_unittest.o \
 		  libev_unittest.o \
 		  gtest_main.o
 
-EXE=test
+EXE=test.out
 
 VPATH		 = .
 

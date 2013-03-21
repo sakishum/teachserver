@@ -2,7 +2,7 @@
 
 struct ev_loop* Evloop::loop = NULL;
 struct ev_io_info Evloop::ioarray[MAXFD];
-int Evloop::clientcount = 0;
+AtomicT<int> Evloop::clientcount;
 
 Evloop::Evloop() {
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -21,10 +21,8 @@ int Evloop::startlisten() {
     servaddr.sin_addr.s_addr = inet_addr(SERVADDR);
     servaddr.sin_port = htons(CONFIG->server_port);
     if (0 != bind(listenfd_, (struct sockaddr*)&servaddr, sizeof(struct sockaddr))) {
-        LOG(ERROR) << "bind error";
-        sleep(1);
-        //致命错误
-        abort();
+        LOG(ERROR) << "bind error" << endl;;
+        abort(); //致命错误
         return -1;
     }
     listen(listenfd_, 10);
@@ -39,12 +37,15 @@ int Evloop::work() {
     Evloop::loop = ev_loop_new(EVBACKEND_EPOLL);
 
     ev_io_init(&ev_io_watcher, accept_cb, listenfd_, EV_READ);
+    //定时器
     ev_timer_init(&timer, time_cb, 5, 5);
 
     ev_io_start(Evloop::loop,&ev_io_watcher); 
+
     ev_timer_start(Evloop::loop,&timer); 
     LOG(INFO)<< "ev_loop started";
 
+    //libev event loop
     ev_loop(Evloop::loop, 0);
 
     ev_loop_destroy(Evloop::loop);
@@ -62,13 +63,14 @@ void Evloop::accept_cb(struct ev_loop *loop, ev_io *w, int revents) {
         return;
     }
     LOG(INFO) << " get a new client fd = " << newfd ;
-    Evloop::setnoblock(newfd);
+    Evloop::setnonblock(newfd);
 
     Evloop::ioarray[newfd].io = (ev_io*)malloc(sizeof(ev_io));
     Evloop::ioarray[newfd].lasttime = ev_time();
 
     ev_io_init(Evloop::ioarray[newfd].io, recv_cb, newfd, EV_READ);
     ev_io_start(loop, Evloop::ioarray[newfd].io);
+    Evloop::clientcount++;
     return;
 }
 
@@ -108,7 +110,7 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
     return;
 }
 
-void Evloop::setnoblock(int fd) {
+void Evloop::setnonblock(int fd) {
   fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 }
 
@@ -119,6 +121,7 @@ void Evloop::closefd(int fd) {
     free(Evloop::ioarray[fd].io);
     Evloop::ioarray[fd].io = NULL;
     SINGLE->mapidfd.delvalue(fd);
+    Evloop::clientcount--;
 }
 
 void Evloop::time_cb(struct ev_loop* loop, struct ev_timer *timer, int revents) {
@@ -132,4 +135,8 @@ void Evloop::time_cb(struct ev_loop* loop, struct ev_timer *timer, int revents) 
         }
     }
     return;
+}
+
+int Evloop::getClientCount() {
+    return Evloop::clientcount.value();
 }

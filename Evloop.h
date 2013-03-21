@@ -1,3 +1,7 @@
+/**
+ * @ingroup net net
+ * @{
+ */
 #ifndef EVLOOP_H_
 #define EVLOOP_H_
 #include <sys/socket.h>
@@ -30,26 +34,54 @@ typedef struct ev_io_info{
     ev_tstamp lasttime;
 }ev_in_info;
 
+/**
+ * @class Evloop
+ * @brief event loop
+ */
 class Evloop: public task{
     public:
         Evloop();
         ~Evloop();
         virtual int work();
+        /**
+         * @brief callback function for accept,when new client connected;
+         */
         static void accept_cb(struct ev_loop *loop, ev_io *w, int revents);
+        /**
+         * @brief callback function when received some data from client;
+         */
+
+        /**
+         * @brief callback function when timeout
+         */
         static void recv_cb(struct ev_loop *loop, ev_io *w, int revents);
         static void time_cb(struct ev_loop *loop, struct ev_timer *timer, int revents);
-        static void setnoblock(int fd);
+        /**
+         * @brief set the fd as nonblock
+         */
+        static void setnonblock(int fd);
+        /**
+         * @brief disconnect the client
+         * @param[in] fd    the client to disconnect
+         */
         static void closefd(int fd);
+
+        /** event loop struct*/
         static struct ev_loop* loop;
 
         //用来记录每个fd的信息，ev_io*和上次收到数据的时间
         static struct ev_io_info ioarray[MAXFD];
 
-        static int clientcount;
+        int getClientCount();
+
 
     private:
+        static AtomicT<int> clientcount;
         int recvbuf(int fd);
         int startlisten();
         int listenfd_;
 };
 #endif
+/**
+ * @}
+ */

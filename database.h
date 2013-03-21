@@ -1,9 +1,7 @@
-/*
-@desc		the db header
-@author		cacls 
-@date		2012/12/24
-@copyright	sxkj
-*/
+/**
+ * ingroup database database
+ * @{
+ */ 
 
 #ifndef _DATABASE_H_
 #define _DATABASE_H_
@@ -26,24 +24,47 @@
 using namespace sql;
 using namespace std;
 
-class DataBase
-{
-public:
-	~DataBase();
-	bool Init(string host, string user_name, string password, string database);
-  Connection* getConnection();
-  Statement* getStatement();
-  string getDatabase();
-  static DataBase* instance();
-private:
-  DataBase();
-  Driver* m_pDriver;
-  Connection* m_pConn;
-	string m_host;
-	string m_user_name;
-	string m_password;
-	string m_database;
-  static DataBase *pinstance;
+class DataBase {
+    public:
+        ~DataBase();
+        /**
+         * @brief init the connection with mysql
+         * @param[in] host      address of mysql
+         * @param[in] username  username of mysql
+         * @param[in] password  password of mysql
+         * @param[in] database  database of mysql
+         * @retval    true      success
+         * @retval    false     faild
+         */
+        bool Init(string host, string username, string password, string database);
+
+        /**
+         * @brief get a Connection of mysql
+         */
+        Connection* getConnection();
+
+        /**
+         * @brief get a Statement of mysql
+         */
+        Statement* getStatement();
+
+        /**
+         * @brief get database name
+         */
+        string getDatabase();
+        static DataBase* instance();
+    private:
+        DataBase();
+        Driver* m_pDriver;
+        Connection* m_pConn;
+        string m_host;
+        string m_user_name;
+        string m_password;
+        string m_database;
+        static DataBase *pinstance;
 };
 #define DATABASE DataBase::instance()
 #endif
+/**
+ * @}
+ */

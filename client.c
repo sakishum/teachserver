@@ -8,7 +8,7 @@
 #include <Protocol.h>
 #define SERV_IP "127.0.0.1"
 #define SERV_PORT 9999 
-#define CON_NUM 10
+#define CON_NUM 500
 
 
 int main(int argc, char* argv[]){
