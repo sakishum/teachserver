@@ -147,6 +147,7 @@ int RecvTask::work() {
             case CT_ZaoFangZi_Email:          // 启动邮件 (教师端)
                 break;
             case ST_ZaoFangZi_Email:          // 显示邮件信息 (白板端)
+                break;
             case CT_ZaoFangZi_JiHe:           // 激活 (教师端)
                 break;
             case ST_ZaoFangZi_JiHe:           // 激活场景 (白板端)
