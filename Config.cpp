@@ -13,10 +13,11 @@ Config::Config(){
 Config::~Config(){
 }
 
-void Config::readconfig(){
+void Config::readconfig(string file){
   lua_State* lua = luaL_newstate();
   //加载脚本
-  int ret = luaL_loadfile(lua, "config.lua");
+  //int ret = luaL_loadfile(lua, "config.lua");
+  int ret = luaL_loadfile(lua, file.c_str());
   if(0 != ret) {
     lua_close(lua);
     return;

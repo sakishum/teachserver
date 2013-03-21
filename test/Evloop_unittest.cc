@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <time.h>
-#include "Protocol.h"
+#include "protocol.h"
 
 #define SERV_IP "127.0.0.1"
 #define SERV_PORT 9999 

@@ -38,7 +38,7 @@ int ProcessManager::process_logic(int argc, char** argv) {
       google::SetLogDestination(google::ERROR, "./logs/error");
       google::SetStderrLogging(google::ERROR + 1);
       //配置输出到标准错误的最低日志级别,使error日志不打屏
-      CONFIG->readconfig();
+      CONFIG->readconfig(CONFIGFILE);
       DATABASE->Init(CONFIG->db_host, CONFIG->db_username, CONFIG->db_password, CONFIG->db_database);
       //启动
       this->run();

@@ -9,7 +9,7 @@ class Config {
     public:
         ~Config();
         static class Config* instance();
-        void readconfig();
+        void readconfig(string file);
         string db_host;
         string db_username;
         string db_password;

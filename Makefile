@@ -12,6 +12,7 @@ OBJS	= ThreadPool.o \
 		  SendTask.o \
 		  database.o \
 		  Config.o \
+		  LoginCheck.o \
 		  main.o
 
 EXE=server

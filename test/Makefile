@@ -5,8 +5,8 @@ LINKS	= -lpthread -lrt -lev -lglog -lmysqlcppconn -llua5.2 -lgtest
 
 OBJS	= twomapT_unittest.o \
 		  PoolT_unittest.o \
-		  Evloop_unittest.o \
 		  libev_unittest.o \
+		  database_unittest.o \
           ../ThreadPool.o \
 		  ../ProcessManager.o \
 		  ../Single.o \
@@ -17,6 +17,7 @@ OBJS	= twomapT_unittest.o \
 		  ../database.o \
 		  ../Config.o \
 		  gtest_main.o
+#Evloop_unittest.o \
 
 EXE=test.out
 

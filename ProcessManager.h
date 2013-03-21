@@ -14,6 +14,8 @@
 #include "SendTask.h"
 #include "Evloop.h"
 #include "Buf.h"
+
+#define CONFIGFILE "./config.lua"
 enum {
   LOCK_WAIT   = LOCK_EX,            /**<阻塞锁*/
   LOCK_NOWAIT = LOCK_EX | LOCK_NB,  /**<非阻塞锁*/

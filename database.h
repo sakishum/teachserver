@@ -16,6 +16,7 @@
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
+#include <cppconn/prepared_statement.h>
 
 #include <glog/logging.h>
 
@@ -49,9 +50,10 @@ class DataBase {
         Statement* getStatement();
 
         /**
-         * @brief get database name
+         * @brief get a prepare Statement of mysql
          */
-        string getDatabase();
+        PreparedStatement* preStatement(string sql);
+
         static DataBase* instance();
     private:
         DataBase();
