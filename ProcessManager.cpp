@@ -74,7 +74,7 @@ int ProcessManager::run() {
   printf("run\n");
 
   thrpool_->start();
-  Evloop* evloop = new Evloop();
+  Evloop* evloop = new Evloop("127.0.0.1", CONFIG->server_port);
   RecvTask* precv = new RecvTask();
   SendTask* psend = new SendTask();
 

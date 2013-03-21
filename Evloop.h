@@ -40,7 +40,7 @@ typedef struct ev_io_info{
  */
 class Evloop: public task{
     public:
-        Evloop();
+        Evloop(string ip, int port);
         ~Evloop();
         virtual int work();
         /**
@@ -80,6 +80,8 @@ class Evloop: public task{
         int recvbuf(int fd);
         int startlisten();
         int listenfd_;
+        int port_;
+        string ip_;
 };
 #endif
 /**

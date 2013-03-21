@@ -4,7 +4,9 @@ struct ev_loop* Evloop::loop = NULL;
 struct ev_io_info Evloop::ioarray[MAXFD];
 AtomicT<int> Evloop::clientcount;
 
-Evloop::Evloop() {
+Evloop::Evloop(string ip, int port) {
+    ip_ = ip;
+    port_ = port;
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
     for (int i = 0; i< MAXFD; ++i) {
         ioarray[i].io = NULL;
@@ -18,8 +20,8 @@ Evloop::~Evloop() {
 int Evloop::startlisten() {
     struct sockaddr_in servaddr;
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr(SERVADDR);
-    servaddr.sin_port = htons(CONFIG->server_port);
+    servaddr.sin_addr.s_addr = inet_addr(ip_.c_str());
+    servaddr.sin_port = htons(port_);
     if (0 != bind(listenfd_, (struct sockaddr*)&servaddr, sizeof(struct sockaddr))) {
         LOG(ERROR) << "bind error" << endl;;
         abort(); //致命错误
@@ -62,6 +64,7 @@ void Evloop::accept_cb(struct ev_loop *loop, ev_io *w, int revents) {
     if ( 0 >= newfd) {
         return;
     }
+
     LOG(INFO) << " get a new client fd = " << newfd ;
     Evloop::setnonblock(newfd);
 
@@ -126,8 +129,9 @@ void Evloop::closefd(int fd) {
 
 void Evloop::time_cb(struct ev_loop* loop, struct ev_timer *timer, int revents) {
     ev_tstamp now = ev_time();
-    for(register int i = 0; i < MAXFD; ++i ){
+    for(register int i = 0; i < MAXFD; ++i ) {
         if (NULL != ioarray[i].io) {
+            //检测超时断开
             if (TIMEOUT < now - ioarray[i].lasttime) {
                 LOG(INFO) << i << " now: "<< now << " last recv data:" << ioarray[i].lasttime ;
                 Evloop::closefd(i);

@@ -5,18 +5,29 @@ LINKS	= -lpthread -lrt -lev -lglog -lmysqlcppconn -llua5.2 -lgtest
 
 OBJS	= twomapT_unittest.o \
 		  PoolT_unittest.o \
+		  Evloop_unittest.o \
 		  libev_unittest.o \
+          ../ThreadPool.o \
+		  ../ProcessManager.o \
+		  ../Single.o \
+		  ../Sock.o \
+		  ../Evloop.o \
+		  ../RecvTask.o \
+		  ../SendTask.o \
+		  ../database.o \
+		  ../Config.o \
 		  gtest_main.o
 
 EXE=test.out
 
-VPATH		 = .
+VPATH		 = ./../
 
 INC=-I.\
 	-I./../ \
 	-I$(HOME)/Downloads/gtest-1.6.0/include
 
 LIB=-L.\
+	-L./../ \
 	-L$(HOME)/Downloads/gtest-1.6.0/lib/.libs
 
 all:clean $(EXE)
@@ -25,6 +36,9 @@ $(EXE):$(OBJS)
 		 $(CPP) $(CFLAGS) $(LIB) $(OBJS) -o $@ $(LINKS)
 
 %.o:%.cc
+		 $(CPP) $(CFLAGS) $(INC) -c $< -o $@
+
+%.o:%.cpp
 		 $(CPP) $(CFLAGS) $(INC) -c $< -o $@
 
 %.o:%.c
