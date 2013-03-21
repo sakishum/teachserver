@@ -5,9 +5,12 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <time.h>
-#define SERV_IP "192.168.101.54"
+#include <Protocol.h>
+#define SERV_IP "127.0.0.1"
 #define SERV_PORT 9999 
-#define CON_NUM 1000
+#define CON_NUM 10
+
+
 int main(int argc, char* argv[]){
     int cntFd[CON_NUM] = {0};
     int i = 0;
@@ -24,13 +27,13 @@ int main(int argc, char* argv[]){
         connect(cntFd[i], (struct sockaddr*)&addr, sizeof(struct sockaddr));
     }
     while(1) {
-        sleep(5);
+        sleep(1);
         printf("xxxx\n");
-        char buf[1024] = {0};
-        unsigned int a = 128;
-        memcpy(buf, &a, sizeof(unsigned int));
+        struct msg x;
+        x.len = sizeof(struct msg) - sizeof(int);
+        strcpy(x.buf, "hellow");
         for( i = 0; i< CON_NUM; ++i) {
-            send(cntFd[i], buf, sizeof(unsigned int) + 128, 0);
+            send(cntFd[i], &x, sizeof(x), 0);
         }
     }
 

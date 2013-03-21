@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 
 #include "database.h"
+#include "Protocol.h"
 /**
  * @class task基类
  */

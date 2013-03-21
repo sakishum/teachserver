@@ -70,7 +70,10 @@ int send_v(int fd,
 
     int sended = 0;
     while(0 != left) {
-            ssize_t len = send(fd, buf + sended, left, 0);
+            int len = send(fd, buf + sended, left, 0);
+            if (EAGAIN == errno) {
+                continue;
+            }
             if(0 == len){
                 break;
             }
@@ -79,8 +82,8 @@ int send_v(int fd,
             }
             left -= len;
             sended += len;
-        }
-    return 0;
+    }
+    return sended;
 }
 
 int recv_v(int fd,
@@ -92,7 +95,7 @@ int recv_v(int fd,
 
     int recved = 0;
     while(0 != left) {
-            ssize_t len = recv(fd, buf + recved, left, 0);
+            int len = recv(fd, (char*)buf + recved, left, 0);
             if (EAGAIN == errno) {
                 continue;
             }
@@ -104,6 +107,6 @@ int recv_v(int fd,
             }
             left -= len;
             recved += len;
-        }
-    return 0;
+    }
+    return recved;
 }

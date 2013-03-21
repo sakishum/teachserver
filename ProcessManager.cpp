@@ -30,13 +30,14 @@ int ProcessManager::process_logic(int argc, char** argv) {
         return 0;
       } 
     case 'd':
-      //初始化日志 google::InitGoogleLogging(argv[0]);
+      //初始化日志 
+      system("mkdir -p logs");
+      google::InitGoogleLogging(argv[0]);
       google::SetLogDestination(google::INFO, "./logs/info");
       google::SetLogDestination(google::WARNING, "./logs/warning");
       google::SetLogDestination(google::ERROR, "./logs/error");
       google::SetStderrLogging(google::ERROR + 1);
       //配置输出到标准错误的最低日志级别,使error日志不打屏
-      system("mkdir -p logs");
       CONFIG->readconfig();
       DATABASE->Init(CONFIG->db_host, CONFIG->db_username, CONFIG->db_password, CONFIG->db_database);
       //启动
@@ -72,7 +73,6 @@ void ProcessManager::sig_term(int signo) {
 int ProcessManager::run() {
   printf("run\n");
 
-  LOG(INFO) << "server started";
   thrpool_->start();
   Evloop* evloop = new Evloop();
   RecvTask* precv = new RecvTask();
@@ -84,8 +84,11 @@ int ProcessManager::run() {
   thrpool_->push_task(psend);
   thrpool_->push_task(psend);
 
+  LOG(INFO) << "server start success!";
+
   //主线程死循环
   while (true) {
+      LOG(INFO) << "main loop!"<<endl;;
     sleep(3);
   }
 

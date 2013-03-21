@@ -1,7 +1,14 @@
 #include "Evloop.h"
 
+struct ev_loop* Evloop::loop = NULL;
+struct ev_io_info Evloop::ioarray[MAXFD];
+int Evloop::clientcount = 0;
+
 Evloop::Evloop() {
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
+    for (int i = 0; i< MAXFD; ++i) {
+        ioarray[i].io = NULL;
+    }
 }
 
 Evloop::~Evloop() {
@@ -15,6 +22,9 @@ int Evloop::startlisten() {
     servaddr.sin_port = htons(CONFIG->server_port);
     if (0 != bind(listenfd_, (struct sockaddr*)&servaddr, sizeof(struct sockaddr))) {
         LOG(ERROR) << "bind error";
+        sleep(1);
+        //致命错误
+        abort();
         return -1;
     }
     listen(listenfd_, 10);
@@ -22,18 +32,22 @@ int Evloop::startlisten() {
 }
 
 int Evloop::work() {
+    //建立监听
     startlisten();
     ev_io ev_io_watcher;
-    struct ev_loop *loop = ev_loop_new(EVBACKEND_EPOLL);
+    ev_timer timer;
+    Evloop::loop = ev_loop_new(EVBACKEND_EPOLL);
 
     ev_io_init(&ev_io_watcher, accept_cb, listenfd_, EV_READ);
+    ev_timer_init(&timer, time_cb, 5, 5);
 
-    ev_io_start(loop,&ev_io_watcher); 
+    ev_io_start(Evloop::loop,&ev_io_watcher); 
+    ev_timer_start(Evloop::loop,&timer); 
     LOG(INFO)<< "ev_loop started";
 
-    ev_loop(loop, 0);
+    ev_loop(Evloop::loop, 0);
 
-    ev_loop_destroy(loop);
+    ev_loop_destroy(Evloop::loop);
     return 0;
 }
 
@@ -49,9 +63,12 @@ void Evloop::accept_cb(struct ev_loop *loop, ev_io *w, int revents) {
     }
     LOG(INFO) << " get a new client fd = " << newfd ;
     Evloop::setnoblock(newfd);
-    ev_io* ev_io_watcher = (ev_io*)malloc(sizeof(ev_io));
-    ev_io_init(ev_io_watcher, recv_cb, newfd, EV_READ);
-    ev_io_start(loop, ev_io_watcher);
+
+    Evloop::ioarray[newfd].io = (ev_io*)malloc(sizeof(ev_io));
+    Evloop::ioarray[newfd].lasttime = ev_time();
+
+    ev_io_init(Evloop::ioarray[newfd].io, recv_cb, newfd, EV_READ);
+    ev_io_start(loop, Evloop::ioarray[newfd].io);
     return;
 }
 
@@ -68,11 +85,9 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
 
     //收包头长度
     int i = recv_v(w->fd, buf->ptr(), sizeof(int));
-    if ( 0 >= i) {
-        printf("disconnect\n");
-        close(w->fd);
-        ev_io_stop(loop, w);
-        free(w);
+    if ( sizeof(int) != i) {
+        LOG(ERROR) << w->fd <<":recv head error! actually received len = "<< i <<endl;;
+        Evloop::closefd(w->fd);
         return;
     }
 
@@ -80,6 +95,13 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
     int *p = (int*)buf->ptr();
     i = recv_v(w->fd, (char*)buf->ptr() + sizeof(int), *p);
 
+    if ( *p != i) {
+        LOG(ERROR) << w->fd <<":recv body error! hope = "<< *p <<" actually received len = "<< i <<endl;;
+        Evloop::closefd(w->fd);
+        return;
+    }
+    
+    Evloop::ioarray[w->fd].lasttime = ev_time();
     buf->setfd(w->fd);
     //将buf压入队列
     SINGLE->recvqueue.enqueue(buf);
@@ -90,3 +112,24 @@ void Evloop::setnoblock(int fd) {
   fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 }
 
+void Evloop::closefd(int fd) {
+    LOG(INFO) << "[" << fd << "] disconnected!"<<endl;
+    close(fd);
+    ev_io_stop(loop, Evloop::ioarray[fd].io);
+    free(Evloop::ioarray[fd].io);
+    Evloop::ioarray[fd].io = NULL;
+    SINGLE->mapidfd.delvalue(fd);
+}
+
+void Evloop::time_cb(struct ev_loop* loop, struct ev_timer *timer, int revents) {
+    ev_tstamp now = ev_time();
+    for(register int i = 0; i < MAXFD; ++i ){
+        if (NULL != ioarray[i].io) {
+            if (TIMEOUT < now - ioarray[i].lasttime) {
+                LOG(INFO) << i << " now: "<< now << " last recv data:" << ioarray[i].lasttime ;
+                Evloop::closefd(i);
+            }
+        }
+    }
+    return;
+}

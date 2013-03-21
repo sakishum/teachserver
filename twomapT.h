@@ -1,6 +1,9 @@
+#ifndef TWOMAP_H_
+#define TWOMAP_H_
 #include <map>
 #include "Mutex.h"
 
+using namespace std;
 template<typename T1, typename T2>
 class twomapT{
   public:
@@ -51,3 +54,4 @@ class twomapT{
   map<T2, T1> v_k;
   MutexLock lock_;
 };
+#endif
