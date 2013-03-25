@@ -13,15 +13,22 @@ OBJS	= ThreadPool.o \
 		  database.o \
 		  Config.o \
 		  LoginCheck.o \
+          content/student.o \
+		  content/room.o \
+		  content/grade.o \
+          content/course.o \
+		  content/classmanager.o \
+		  content/teacher.o \
+		  content/class.o \
 		  main.o
 
 EXE=server
 
 VPATH		 = .
 
-INC=-I.\
+INC=-I. -I./content
 
-LIB=-L.\
+LIB=-L.
 
 all:clean $(EXE)
 

@@ -18,13 +18,15 @@
 #include "student.h"
 #include "grade.h"
 #include "room.h"
+#include "database.h"
+#include "SQL.h"
 
 class cClass
 {
 	typedef list<cStudent*> STUDENTLIST;
 public:
 	void setName (string& sName);
-	string& getName (void);
+	string getName (void);
 
 	cClass ();
 	~cClass ();
@@ -37,10 +39,10 @@ public:
     string getGradeName (void);
 	string getTeacherName (void);
 
-    bool inRoomTeacher (string& name);
+    bool inRoomTeacher (const string& name);
 	bool inRoomTeacher (cTeacher* tea);
 
-	bool inRoomStudent (string& name);
+	bool inRoomStudent (const string& name);
 	bool inRoomStudent (cStudent* stu);
 
     void joinStudent (string& fName, string& lName, string& account);

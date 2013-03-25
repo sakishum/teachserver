@@ -20,6 +20,7 @@ class cRoom
 {
 private:
     string m_name;
+    string m_whiteboard;
 
 public:
     cRoom();
@@ -27,6 +28,9 @@ public:
 
     string getName (void);
     void setName (string& sName);
+
+    string getWhiteBoardName (void);
+    void setWhiteBoardName (string& sName);
 };
 
 #endif //_C_ROOM_H

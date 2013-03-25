@@ -16,6 +16,7 @@
 
 #include "course.h"
 #include "database.h"
+#include "SQL.h"
 
 using namespace std;
 
@@ -34,6 +35,9 @@ public:
 
 	void addCourse (string& sName);
 	bool delCourse (string& sName);
+	
+	string getName (void);
+	void setName (string& fName, string& lName);
 
     void setAccount (string& sAccount);
     string getAccount (void);

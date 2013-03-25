@@ -17,11 +17,18 @@ bool cTeacher::inCourseList (string& sName)
 
 void cTeacher::addCourse (string& sName)
 {
+    PreparedStatement* pstmt = DATABASE->preStatement (SQL_SELECT_COURSE);
+    pstmt->setString (1, sName.c_str());
+    ResultSet* result = pstmt->executeQuery ();
+#if 0
+    //
     string sql, resultStr1;
     char str[500];
     sprintf (str, "SELECT course_name FROM course WHERE course_name = '%s'", sName.c_str());
     sql = str;
     result = m_DB->Query (sql);
+#endif
+    string resultStr1;
     if ((resultStr1 = result->getString ("course_name")) == sName) {
         if (inCourseList (sName)) {
             //LOG::out "course is exists in the courselist
@@ -61,4 +68,14 @@ void cTeacher::setAccount (string& sAccount)
 string cTeacher::getAccount (void)
 {
     return m_Account;
+}
+
+string cTeacher::getName (void)
+{
+    return this->m_TeacherName;
+}
+
+void cTeacher::setName (string& fName, string& lName)
+{
+    this->m_TeacherName = fName + lName;
 }

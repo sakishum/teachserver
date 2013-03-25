@@ -16,5 +16,5 @@
 
 int main (void)
 {
-    CLASSMANAGER;
+    // CLASSMANAGER->m_ClassList;
 }

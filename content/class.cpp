@@ -5,7 +5,6 @@
 
 #include "class.h"
 
-
 void cClass::setName (string& sName)
 {
     m_ClassName = sName;
@@ -67,16 +66,17 @@ cGrade* cClass::getGrade (void)
 
 bool cClass::inRoomTeacher (cTeacher* tea)
 {
-    return this->inRoomTeacher (tea->getName());
+    string s = tea->getName ();
+    return this->inRoomTeacher (s);
 }
 
-bool cClass::inRoomTeacher (string& name)
+bool cClass::inRoomTeacher (const string& name)
 {
     return this->getTeacher()->getName() == name ? \
            true : false;
 }
 
-bool cClass::inRoomStudent (string& name)
+bool cClass::inRoomStudent (const string& name)
 {
     STUDENTLIST::iterator it;
     for (it = m_StudentList.begin(); it != m_StudentList.end(); it++) {
@@ -95,13 +95,19 @@ bool cClass::enterRoom (string& sClass, string& sRoom, string& sTeacher, string&
 {
     int resultInt;
     string resultStr1, resultStr2, resultStr3, resultStr4, resultStr5;
-    char str[500];
+    //char str[500];
     ResultSet* result;
     string sql;
 
+#if 0
     sprintf (str, "SELECT count(*) AS COUNT FROM class WHERE class_name = '%s'", sClass);
     sql = str;
     result = m_DB->Query (sql);
+#endif
+    PreparedStatement* pstmt = DATABASE->preStatement (SQL_SELECT_CLASS);
+    pstmt->setString (1, sClass.c_str());
+    result = pstmt->executeQuery ();
+    
     if ((resultInt = result->getInt ("COUNT")) > 0)
         this->m_ClassName = sClass;
     else {
@@ -109,22 +115,34 @@ bool cClass::enterRoom (string& sClass, string& sRoom, string& sTeacher, string&
         return false;
     }
 
+#if 0
     sprintf (str, "SELECT classroom_name, white_board FROM classroom WHERE classroom_name = '%s'", sRoom);
     sql = str;
     result = m_DB->Query (sql);
+#endif
+    pstmt = DATABASE->preStatement (SQL_SELECT_CLASSROOM);
+    pstmt->setString (1, sRoom.c_str());
+    result = pstmt->executeQuery ();
+    
     if ((resultStr1 = result->getString ("classroom_name")) == sRoom) {
         resultStr2 = result->getString ("white_board");
         this->m_Room->setName (resultStr1);
-        this->m_Room->setWhiteBoard (resultStr2);
+        this->m_Room->setWhiteBoardName (resultStr2);
     }
     else {
         //LOG::out "classroom is not exists in the database"
         return false;
     }
 
+#if 0
     sprintf (str, "SELECT * FROM teacher WHERE account = '%s'", sTeacher);
     sql = str;
     result = m_DB->Query (sql);
+#endif
+    pstmt = DATABASE->preStatement (SQL_SELECT_TEACHER);
+    pstmt->setString (1, sTeacher.c_str());
+    result = pstmt->executeQuery ();
+    
     if ((resultStr1 = result->getString ("account")) == sTeacher) {
         this->m_Teacher->setAccount (resultStr1);
         resultStr2 = result->getString ("first_name");
@@ -135,10 +153,16 @@ bool cClass::enterRoom (string& sClass, string& sRoom, string& sTeacher, string&
         //LOG::out "teacher is not exists in the database"
         return false;
     }
-
+    
+#if 0
     sprintf (str, "SELECT grade_name FROM grade WHERE grade_name = '%s'", sGrade);
     sql = str;
     result = m_DB->Query (sql);
+#endif
+    pstmt = DATABASE->preStatement (SQL_SELECT_GRADE);
+    pstmt->setString (1, sGrade.c_str());
+    result = pstmt->executeQuery ();
+    
     if ((resultStr1 = result->getString ("grade_name")) == sGrade) {
         this->m_Grade->setName (sGrade);
     }
@@ -147,6 +171,7 @@ bool cClass::enterRoom (string& sClass, string& sRoom, string& sTeacher, string&
         return false;
     }
 
+#if 0
     sprintf (str, "SELECT stu.first_name, stu.last_name, stu.account, cla.class_name, gra.grade_name " \
                   "FROM student AS stu, class AS cla, grade AS gra " \
                   "WHERE stu.class_id = cla.class_id " \
@@ -155,6 +180,12 @@ bool cClass::enterRoom (string& sClass, string& sRoom, string& sTeacher, string&
                   "AND cla.class_name = '%s'", sGrade, sClass);
     sql = str;
     result = m_DB->Query (sql);
+#endif
+    pstmt = DATABASE->preStatement (SQL_SELECT_ALLSTU);
+    pstmt->setString (1, sGrade.c_str());
+    pstmt->setString (2, sClass.c_str());
+    result = pstmt->executeQuery ();
+    
     while (result->next ()) {
         if ((resultStr1 = result->getString ("grade_name")) == sGrade ||
             (resultStr2 = result->getString ("class_name")) == sClass)
@@ -174,7 +205,7 @@ void cClass::joinStudent (string& fName, string& lName, string& account)
     cStudent* tmp = new cStudent;
     tmp->setName (fName, lName);
     tmp->setAccount (account);
-    m_StudentList->push_back (tmp);
+    m_StudentList.push_back (tmp);
 }
 
 bool cClass::exitRoom (string& sClass, string& sRoom, string& sTeacher, string& sGrade)
