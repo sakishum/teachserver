@@ -5,6 +5,14 @@
 
 #include "course.h"
 
+cCourse :: cCourse ()
+{
+}
+
+cCourse :: ~cCourse ()
+{
+}
+
 void cCourse::setName (string& sName)
 {
     this->m_name = sName;

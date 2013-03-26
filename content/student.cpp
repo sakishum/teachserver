@@ -5,6 +5,14 @@
 
 #include "student.h"
 
+cStudent::cStudent ()
+{
+}
+
+cStudent::~cStudent ()
+{
+}
+
 void cStudent::setName (string& s1, string& s2)
 {
     m_StuName = s1 + s2;

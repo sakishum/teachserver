@@ -5,6 +5,14 @@
 
 #include "grade.h"
 
+cGrade::cGrade()
+{
+}
+
+cGrade::~cGrade ()
+{
+}
+
 string cGrade::getName (void)
 {
     return this->m_name;

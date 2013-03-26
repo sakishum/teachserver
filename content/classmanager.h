@@ -31,7 +31,7 @@ public:
 	cClass* findClass (string& sClass, string& sRoom, string& sTeacher, string& sGrade);
 
 private:
-	cClassManager ();
+	cClassManager () {}
 	CLASSLIST m_ClassList;
 	static cClassManager* m_ClassManager;
 };

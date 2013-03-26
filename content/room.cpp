@@ -5,6 +5,14 @@
 
 #include "room.h"
 
+cRoom::cRoom()
+{
+}
+
+cRoom::~cRoom ()
+{
+}
+
 string cRoom::getName (void)
 {
     return m_name;
