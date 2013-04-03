@@ -13,7 +13,8 @@ class Config {
         string db_host;
         string db_username;
         string db_password;
-        string db_database;;
+        string db_database;
+        string server_ip;
         int server_port;
         int school_id;
         int game_count;

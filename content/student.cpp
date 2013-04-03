@@ -5,40 +5,57 @@
 
 #include "student.h"
 
-cStudent::cStudent ()
-{
+CStudent::CStudent () {
 }
 
-cStudent::~cStudent ()
-{
+CStudent::~CStudent () {
 }
 
-void cStudent::setName (string& s1, string& s2)
-{
+void CStudent::setName (string& s1, string& s2) {
     m_StuName = s1 + s2;
 }
 
-string cStudent::getName (void)
-{
+string CStudent::getName (void) {
     return m_StuName;
 }
 
-void cStudent::setAccount (string& acc)
-{
+void CStudent::setAccount (string& acc) {
     m_AccountName = acc;
 }
 
-string cStudent::getAccount (void)
-{
+string CStudent::getAccount (void) {
     return m_AccountName;
 }
 
-void cStudent::setOnLine (bool b)
-{
+void CStudent::setOnLine (bool b) {
     m_onLine = b;
 }
 
-bool cStudent::getOnLine (void)
-{
+bool CStudent::getOnLine (void) {
     return m_onLine;
+}
+
+void CStudent::setId(int id) {
+    m_Id = id;
+}
+
+int CStudent::getId() {
+    return m_Id;
+}
+
+void CStudent::setSocket(int sock) {
+    m_Socket = sock;
+}
+
+int CStudent::getSocket() {
+    return m_Socket;
+}
+void CStudent::setPictureName (string name)
+{
+    this->m_picture_name = name;
+}
+
+string CStudent::getPictureName (void)
+{
+    return this->m_picture_name;
 }

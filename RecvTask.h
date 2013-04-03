@@ -12,6 +12,7 @@
 #include "Sock.h"
 #include "Single.h"
 #include "Buf.h"
+#include "HandleMessage.h"
 class RecvTask: public task{
     public:
         RecvTask();

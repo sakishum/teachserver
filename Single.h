@@ -13,7 +13,8 @@ class Single {
         QueueT<Buf*> recvqueue;
         QueueT<Buf*> sendqueue;
         PoolT<Buf> bufpool;
-        twomapT<int, int> mapidfd;
+
+        twomapT<int, int> map_id_fd; //<id, fd>
 
 
     private:

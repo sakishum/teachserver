@@ -21,42 +21,48 @@
 #include "database.h"
 #include "SQL.h"
 
-class cClass
+#include "course.h"
+
+#include "HandleMessage.h"
+
+class CClass
 {
-	typedef list<cStudent*> STUDENTLIST;
+	typedef map<int, CStudent*> STUDENTMAP;
+    typedef list<CCourse*> COURSELIST;
+
 public:
-	void setName (string& sName);
-	string getName (void);
+	 CClass(int id, string class_name, string white_board);
+	~CClass ();
 
-	cClass ();
-	~cClass ();
+    //friend bool CHandleMessage::postTeacherToAllStudent (Buf* p, enum CommandType iCommandType);
+    friend class CHandleMessage;
 
-	cRoom* getRoom (void);
-    cGrade* getGrade (void);
-	cTeacher* getTeacher (void);
+    int  get_class_id();
+    void set_teacher_fd(int fd);
+    void set_white_fd(int fd);
+    void add_student(int fd, CStudent* pstudent);
 
-	string getRoomName (void);
-    string getGradeName (void);
-	string getTeacherName (void);
+    CStudent* get_student_by_fd (int fd);
+    CTeacher* get_teacher_by_fd (int fd);
+    CCourse * get_course_by_name (string course_name);
+    CCourse * get_course_by_id (int id);
 
-    bool inRoomTeacher (const string& name);
-	bool inRoomTeacher (cTeacher* tea);
+    void add_course (CCourse *);
 
-	bool inRoomStudent (const string& name);
-	bool inRoomStudent (cStudent* stu);
+    int  get_teacher_fd ();
+    int  get_white_fd ();
 
-    void joinStudent (string& fName, string& lName, string& account);
+    CClass* get_class_by_fd (int fd);
 
-	bool enterRoom (string& sClass, string& sRoom, string& sTeacher, string& sGrade);
-	bool exitRoom (string& sClass, string& sRoom, string& sTeacher, string& sGrade);
 private:
-	cRoom*      m_Room;
-	cTeacher*   m_Teacher;
-    cGrade*     m_Grade;
-	string      m_ClassName;
-	STUDENTLIST m_StudentList;
-	int         m_IsExist;
-	DataBase*   m_DB;
+    CTeacher m_teacher;
+    int m_class_id;
+    int m_teacher_fd;
+    int m_white_fd;
+    string m_class_name;
+    string m_white_board;
+    STUDENTMAP m_student_map;
+    COURSELIST m_course_list;
 };
 
 #endif //_C_CLASS_H

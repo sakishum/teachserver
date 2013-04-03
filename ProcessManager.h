@@ -15,6 +15,9 @@
 #include "Evloop.h"
 #include "Buf.h"
 
+#include "roommanager.h"
+#include "HandleMessage.h"
+
 #define CONFIGFILE "./config.lua"
 enum {
   LOCK_WAIT   = LOCK_EX,            /**<阻塞锁*/

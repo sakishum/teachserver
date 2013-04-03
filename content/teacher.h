@@ -14,30 +14,32 @@
 #include <numeric>
 #include <iostream>
 
-#include "course.h"
 #include "database.h"
 #include "SQL.h"
 
 using namespace std;
 
-class cTeacher
+class CTeacher
 {
-	typedef list<cCourse*> COURSELIST;
+	//typedef list<cCourse*> COURSELIST;
 
 private:
-	COURSELIST  m_CourseList;
+	//COURSELIST  m_CourseList;
 	string      m_TeacherName;
     string      m_Account;
-	DataBase*   m_DB;
+    int         m_SocketFd;
 
 public:
-	bool inCourseList (string& sName);
+    CTeacher();
+	//bool inCourseList (string& sName);
 
-	void addCourse (string& sName);
-	bool delCourse (string& sName);
+	//void addCourse (string& sName);
+	//bool delCourse (string& sName);
 	
 	string getName (void);
+    int getSocket();
 	void setName (string& fName, string& lName);
+    void setSocket(int fd);
 
     void setAccount (string& sAccount);
     string getAccount (void);

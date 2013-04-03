@@ -8,6 +8,9 @@ Evloop::Evloop(string ip, int port) {
     ip_ = ip;
     port_ = port;
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
+    setnonblock (listenfd_);
+    setreuseaddr (listenfd_);
+    setnodelay (listenfd_);
     for (int i = 0; i< MAXFD; ++i) {
         ioarray[i].io = NULL;
     }
@@ -20,7 +23,9 @@ Evloop::~Evloop() {
 int Evloop::startlisten() {
     struct sockaddr_in servaddr;
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr(ip_.c_str());
+    //servaddr.sin_addr.s_addr = inet_addr(ip_.c_str());
+    //inet_pton (AF_INET, ip_.c_str(), &servaddr.sin_addr.s_addr);
+    servaddr.sin_addr.s_addr = htonl (INADDR_ANY);
     servaddr.sin_port = htons(port_);
     if (0 != bind(listenfd_, (struct sockaddr*)&servaddr, sizeof(struct sockaddr))) {
         LOG(ERROR) << "bind error" << endl;;
@@ -35,16 +40,17 @@ int Evloop::work() {
     //建立监听
     startlisten();
     ev_io ev_io_watcher;
-    ev_timer timer;
+    //ev_timer timer;
     Evloop::loop = ev_loop_new(EVBACKEND_EPOLL);
 
     ev_io_init(&ev_io_watcher, accept_cb, listenfd_, EV_READ);
-    //定时器
-    ev_timer_init(&timer, time_cb, 5, 5);
 
     ev_io_start(Evloop::loop,&ev_io_watcher); 
-
+#if 0
+    //定时器
+    ev_timer_init(&timer, time_cb, 5, 5);
     ev_timer_start(Evloop::loop,&timer); 
+#endif
     LOG(INFO)<< "ev_loop started";
 
     //libev event loop
@@ -98,9 +104,9 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
 
     //收包体
     int *p = (int*)buf->ptr();
-    i = recv_v(w->fd, (char*)buf->ptr() + sizeof(int), *p);
+    i = recv_v(w->fd, (char*)buf->ptr() + sizeof(int), *p - sizeof(unsigned int));
 
-    if ( *p != i) {
+    if ( (*p - sizeof(unsigned int)) != i) {
         LOG(ERROR) << w->fd <<":recv body error! hope = "<< *p <<" actually received len = "<< i <<endl;;
         Evloop::closefd(w->fd);
         return;
@@ -109,6 +115,7 @@ void Evloop::recv_cb(struct ev_loop *loop, ev_io *w, int revents) {
     Evloop::ioarray[w->fd].lasttime = ev_time();
     buf->setfd(w->fd);
     //将buf压入队列
+    printf("[%d]XXXXXXXXXXXXXXXX\n", w->fd);
     SINGLE->recvqueue.enqueue(buf);
     return;
 }
@@ -117,13 +124,25 @@ void Evloop::setnonblock(int fd) {
   fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 }
 
+void Evloop::setreuseaddr(int fd)
+{
+    int reuse = 1;
+    setsockopt (fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof (reuse));
+}
+
+void Evloop::setnodelay (int fd)
+{
+    int nodelay = 1;
+    setsockopt (fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof (nodelay));
+}
+
 void Evloop::closefd(int fd) {
     LOG(INFO) << "[" << fd << "] disconnected!"<<endl;
     close(fd);
     ev_io_stop(loop, Evloop::ioarray[fd].io);
     free(Evloop::ioarray[fd].io);
     Evloop::ioarray[fd].io = NULL;
-    SINGLE->mapidfd.delvalue(fd);
+    SINGLE->map_id_fd.delvalue(fd);
     Evloop::clientcount--;
 }
 
@@ -134,7 +153,7 @@ void Evloop::time_cb(struct ev_loop* loop, struct ev_timer *timer, int revents) 
             //检测超时断开
             if (TIMEOUT < now - ioarray[i].lasttime) {
                 LOG(INFO) << i << " now: "<< now << " last recv data:" << ioarray[i].lasttime ;
-                Evloop::closefd(i);
+                //Evloop::closefd(i);
             }
         }
     }

@@ -40,6 +40,10 @@ void Config::readconfig(string file){
   lua_getglobal(lua,"db_database");
   db_database = lua_tostring(lua, -1);
 
+  //IP
+  lua_getglobal(lua,"server_ip");
+  server_ip = lua_tostring(lua, -1);
+
   //端口
   lua_getglobal(lua,"server_port");
   server_port = lua_tointeger(lua, -1);
@@ -52,7 +56,7 @@ void Config::readconfig(string file){
   lua_getglobal(lua,"game_count");
   game_count = lua_tointeger(lua, -1);
 
-  lua_pop(lua,7);
+  lua_pop(lua,8);
 
   lua_close(lua);
   return;

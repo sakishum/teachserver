@@ -19,6 +19,7 @@ bool DataBase::Init(string host, string user_name, string password, string datab
         m_pConn->setSchema(database);
     } catch(SQLException e) {
         LOG(ERROR) << e.what();
+        printf("Database Info =[%s]\n", e.what());
         m_pConn = NULL;
     }
     return (NULL == m_pConn) ? false:true;

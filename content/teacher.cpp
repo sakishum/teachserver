@@ -5,8 +5,20 @@
 
 #include "teacher.h"
 
-bool cTeacher::inCourseList (string& sName)
-{
+CTeacher::CTeacher() {
+}
+
+
+void CTeacher::setSocket(int fd) {
+    this->m_SocketFd = fd;
+}
+
+int CTeacher::getSocket() {
+    return this->m_SocketFd;
+}
+
+#if 0
+bool CTeacher::inCourseList (string& sName) {
     COURSELIST::iterator it;
     for (it = m_CourseList.begin(); it != m_CourseList.end(); it++) {
         if ((*it)->getName() == sName)
@@ -15,7 +27,7 @@ bool cTeacher::inCourseList (string& sName)
     return false;
 }
 
-void cTeacher::addCourse (string& sName)
+void CTeacher::addCourse (string& sName)
 {
     PreparedStatement* pstmt = DATABASE->preStatement (SQL_SELECT_COURSE);
     pstmt->setString (1, sName.c_str());
@@ -46,7 +58,7 @@ void cTeacher::addCourse (string& sName)
     }
 }
 
-bool cTeacher::delCourse (string& sName)
+bool CTeacher::delCourse (string& sName)
 {
     COURSELIST::iterator it;
     for (it = m_CourseList.begin(); it != m_CourseList.end(); it++) {
@@ -59,23 +71,23 @@ bool cTeacher::delCourse (string& sName)
     //LOG::out "not exist in the CourseList"
     return false;
 }
-
-void cTeacher::setAccount (string& sAccount)
+#endif
+void CTeacher::setAccount (string& sAccount)
 {
     this->m_Account = sAccount;
 }
 
-string cTeacher::getAccount (void)
+string CTeacher::getAccount (void)
 {
     return m_Account;
 }
 
-string cTeacher::getName (void)
+string CTeacher::getName (void)
 {
     return this->m_TeacherName;
 }
 
-void cTeacher::setName (string& fName, string& lName)
+void CTeacher::setName (string& fName, string& lName)
 {
     this->m_TeacherName = fName + lName;
 }

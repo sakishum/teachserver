@@ -15,7 +15,7 @@
 #include <sys/fcntl.h>
 #include <list>
 #include <time.h>
-
+#include <netinet/tcp.h>
 #include <ev.h>
 
 #include "Mutex.h"
@@ -60,6 +60,8 @@ class Evloop: public task{
          * @brief set the fd as nonblock
          */
         static void setnonblock(int fd);
+        static void setreuseaddr(int fd);
+        static void setnodelay (int fd);
         /**
          * @brief disconnect the client
          * @param[in] fd    the client to disconnect

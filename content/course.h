@@ -14,19 +14,31 @@
 #include <numeric>
 #include <iostream>
 
+#include "courseitem.h"
+
 using namespace std;
 
-class cCourse
+typedef list<CCourseItem*> COURSEITEMLIST;
+
+class CCourse
 {
 private:
     string m_name;
-
+    int m_course_id;
+    COURSEITEMLIST m_courseList;
 public:
-    cCourse ();
-	~cCourse ();
+    CCourse ();
+	~CCourse ();
+
+    CCourseItem* get_item_by_id (int id);
+    CCourseItem* get_item_by_name (string name);
+    void add_item (CCourseItem *);
 
     void setName (string& sName);
     string getName (void);
+
+    void setId (int id);
+    int getId (void);
 };
 
 #endif //_C_COURSE_H

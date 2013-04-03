@@ -39,7 +39,11 @@ int ProcessManager::process_logic(int argc, char** argv) {
       google::SetStderrLogging(google::ERROR + 1);
       //配置输出到标准错误的最低日志级别,使error日志不打屏
       CONFIG->readconfig(CONFIGFILE);
-      DATABASE->Init(CONFIG->db_host, CONFIG->db_username, CONFIG->db_password, CONFIG->db_database);
+      if (!DATABASE->Init(CONFIG->db_host, CONFIG->db_username, CONFIG->db_password, CONFIG->db_database))
+      {
+          printf("Database error! Please check database status\n");
+          return 0;
+      }
       //启动
       this->run();
       break;
@@ -74,14 +78,19 @@ int ProcessManager::run() {
   printf("run\n");
 
   thrpool_->start();
-  Evloop* evloop = new Evloop("127.0.0.1", CONFIG->server_port);
+  Evloop* evloop = new Evloop(CONFIG->server_ip.c_str(), CONFIG->server_port);
+  printf("server_ip = [%s] port = [%d]\n", CONFIG->server_ip.c_str(), CONFIG->server_port);
   RecvTask* precv = new RecvTask();
   SendTask* psend = new SendTask();
 
+  ROOMMANAGER->init();
+  CHandleMessage::initHandlers();
+  printf("[%d] class init success!\n", ROOMMANAGER->get_room_count());
+
   thrpool_->push_task(evloop);//监听和数据接收线程
   thrpool_->push_task(precv);//数据处理线程
-  thrpool_->push_task(precv);//数据处理线程
-  thrpool_->push_task(psend);
+  //thrpool_->push_task(precv);//数据处理线程
+  //thrpool_->push_task(psend);
   thrpool_->push_task(psend);
 
   LOG(INFO) << "server start success!";

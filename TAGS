@@ -1,0 +1,709 @@
+
+twomapT.h,530
+#define TWOMAP_H_2,18
+using namespace std;6,71
+template<typename T1,7,92
+class twomapT{twomapT8,127
+  twomapT(twomapT::twomapT10,152
+  ~twomapT(twomapT::~twomapT11,167
+  void insert(twomapT::insert12,183
+  T2 value(twomapT::value20,357
+  T1 key(twomapT::key27,466
+void delkey(twomapT::delkey33,566
+  void delvalue(twomapT::delvalue39,686
+  map<twomapT::map47,818
+  map<T1, T2> kv_;twomapT::kv_47,818
+  map<twomapT::map48,837
+  map<T2, T1> vk_;twomapT::vk_48,837
+  MutexLock lock_;twomapT::lock_49,856
+
+Sock.h,22
+#define _SOCK_H_2,17
+
+RecvTask.cpp,226
+RecvTask::RecvTask(4,47
+RecvTask::~RecvTask(7,73
+void login_check 10,100
+void process_scene 16,194
+void getDBRecordCount 33,574
+void getDBRecord 114,2934
+void handle_selected_class(263,8956
+int RecvTask::work(280,9524
+
+Mutex.h,1074
+#define _MUTEX_LOCK_H_2,23
+class MutexLock{MutexLock8,115
+        MutexLock(MutexLock::MutexLock10,144
+        ~MutexLock(MutexLock::~MutexLock14,224
+        void lock(MutexLock::lock18,303
+        void unlock(MutexLock::unlock22,378
+        pthread_mutex_t* getPthreadMutex(MutexLock::getPthreadMutex26,457
+        pthread_mutex_t mutex_;MutexLock::mutex_32,647
+class MutexLockGuard{MutexLockGuard38,716
+        explicit MutexLockGuard(MutexLockGuard::MutexLockGuard40,750
+        ~MutexLockGuard(MutexLockGuard::~MutexLockGuard43,856
+        MutexLock& mutex_;MutexLockGuard::mutex_49,1050
+class Condition{Condition56,1132
+        Condition(Condition::Condition58,1161
+        int wait(Condition::wait62,1261
+        int wait(Condition::wait67,1379
+        void notify(Condition::notify74,1620
+        void notifyall(Condition::notifyall78,1696
+        ~Condition(Condition::~Condition82,1778
+        MutexLock& mutex_;Condition::mutex_87,1905
+        pthread_cond_t pcond_;Condition::pcond_88,1932
+#define MutexLockGuard(90,1966
+
+ThreadPool.h,400
+#define _THREADPOOL_H_2,23
+class ThreadPool{ThreadPool15,249
+        list<pthread_t> threads_;ThreadPool::threads_28,562
+        QueueT<task*> TaskQueue_;ThreadPool::TaskQueue_29,596
+        AtomicT<int> state_;ThreadPool::state_30,630
+        AtomicT<int> free_;ThreadPool::free_31,659
+        int count;ThreadPool::count32,687
+        MutexLock ListLock_;ThreadPool::ListLock_33,706
+
+SendTask.cpp,76
+SendTask::SendTask(2,22
+SendTask::~SendTask(5,48
+int SendTask::work(8,75
+
+Config.h,558
+#define _CONFIG_H_2,19
+using namespace std;7,102
+class Config 8,123
+        string db_host;Config::db_host13,248
+        string db_username;Config::db_username14,272
+        string db_password;Config::db_password15,300
+        string db_database;Config::db_database16,328
+        string server_ip;Config::server_ip17,356
+        int server_port;Config::server_port18,382
+        int school_id;Config::school_id19,407
+        int game_count;Config::game_count20,430
+        static class Config* p_;Config::p_23,485
+#define CONFIG 25,521
+
+ProcessManager.h,390
+#define _PROCESSMAMAGER_H_2,27
+#define CONFIGFILE 20,351
+  LOCK_WAIT 22,392
+  LOCK_WAIT   = LOCK_EX,22,392
+  LOCK_NOWAIT 23,444
+  LOCK_NOWAIT = LOCK_EX 23,444
+  LOCK_NOWAIT = LOCK_EX | LOCK_NB,23,444
+  UNLOCK 24,499
+  UNLOCK      = LOCK_UN 24,499
+class ProcessManager27,552
+    ThreadPool* thrpool_;ProcessManager::thrpool_37,764
+    int lockfd_;ProcessManager::lockfd_38,790
+
+AtomicT.h,998
+#define _ATOMICT_H_5,47
+class AtomicT 11,153
+        AtomicT(AtomicT::AtomicT13,181
+        AtomicT(AtomicT::AtomicT16,234
+        ~AtomicT(AtomicT::~AtomicT19,293
+        TYPE value(AtomicT::value22,324
+        TYPE operator+= AtomicT::operator+=27,432
+        TYPE operator-= AtomicT::operator-=32,556
+        TYPE operator++ AtomicT::operator++40,736
+        TYPE operator++ AtomicT::operator++48,912
+        TYPE operator-- AtomicT::operator--53,1030
+        TYPE operator-- AtomicT::operator--58,1149
+        AtomicT<TYPE>& operator= AtomicT::operator=63,1267
+        bool operator== AtomicT::operator==70,1471
+        bool operator!= AtomicT::operator!=75,1595
+        bool operator> AtomicT::operator>80,1719
+        bool operator>= AtomicT::operator>=85,1841
+        bool operator< AtomicT::operator<90,1965
+        bool operator<= AtomicT::operator<=95,2087
+        TYPE value_;AtomicT::value_101,2224
+        MutexLock lock_;AtomicT::lock_102,2245
+
+database.h,523
+#define _DATABASE_H_7,66
+using namespace sql;25,424
+using namespace std;26,445
+class DataBase 28,467
+        Driver* m_pDriver;DataBase::m_pDriver60,1359
+        Connection* m_pConn;DataBase::m_pConn61,1386
+        string m_host;DataBase::m_host62,1415
+        string m_user_name;DataBase::m_user_name63,1438
+        string m_password;DataBase::m_password64,1466
+        string m_database;DataBase::m_database65,1493
+        static DataBase *pinstance;DataBase::pinstance66,1520
+#define DATABASE 68,1559
+
+SendTask.h,57
+#define SENDTASK_H_2,20
+class SendTask:SendTask15,268
+
+Single.cpp,103
+Single* Single::p_ 2,20
+Single* Single::instance(3,47
+Single::Single(10,150
+Single::~Single(13,175
+
+main.cpp,16
+int main(9,130
+
+SQL.h,556
+#define _SQL_H_2,16
+#define SQL_SELECT_STU 4,33
+#define SQL_SELECT_COURSE 5,317
+#define SQL_SELECT_CLASS 6,398
+#define SQL_SELECT_CLASSROOM 7,482
+#define SQL_SELECT_CLASSROOM1 8,588
+#define SQL_SELECT_TEACHER 9,692
+#define SQL_SELECT_GRADE 10,761
+#define SQL_SELECT_ALLSTU 11,838
+#define SQL_SELECT_COURSE_DB 15,1503
+#define SQL_SELECT_GRADE_DB 17,1906
+#define SQL_SELECT_CLASS_DB 18,1965
+#define SQL_SELECT_CLASSROOM_DB 19,2024
+#define SQL_SELECT_STUDENT_DB 20,2108
+#define SQL_SELECT_COURSEITEM_DB 21,2252
+#define SQL_SELECT_ROOM 23,2445
+
+Evloop.h,606
+#define EVLOOP_H_6,52
+#define SERVADDR 27,462
+#define SERVPORT 28,491
+#define MAXFD 29,513
+#define TIMEOUT 30,533
+typedef struct ev_io_info{ev_io_info32,553
+    struct ev_io* io;33,580
+    ev_tstamp lasttime;34,602
+}ev_in_info;ev_in_info35,626
+class Evloop:Evloop41,686
+        static struct ev_loop* loop;Evloop::loop72,1692
+        static struct ev_io_info ioarray[Evloop::ioarray75,1809
+        static AtomicT<int> clientcount;Evloop::clientcount81,1904
+        int listenfd_;Evloop::listenfd_84,2001
+        int port_;Evloop::port_85,2024
+        string ip_;Evloop::ip_86,2043
+
+ThreadPool.cpp,284
+ThreadPool::ThreadPool(3,25
+ThreadPool::~ThreadPool(7,89
+int ThreadPool::start(10,120
+int ThreadPool::stop(21,386
+int ThreadPool::push_task(29,505
+int ThreadPool::getcount(33,585
+void* ThreadPool::thread(38,687
+int ThreadPool::kill(61,1261
+void ThreadPool::sighandle(70,1465
+
+protocol.h,7227
+#define _PROTOCOL_H2,20
+enum CommandType5,57
+    CT_Test 7,76
+    CT_ChangeScene 8,93
+    CT_Login 10,120
+    CT_LoginReuslt,11,167
+    CT_GetCourseDBCount,12,220
+    CT_GetCourseDB,13,300
+    CT_SetCourseGroup,14,374
+    CT_GetCourseGroup,15,442
+    CT_GetCourseItemCount,16,522
+    CT_GetCourseItem,17,599
+    CT_Logout,18,667
+    CT_LogoutReuslt,19,714
+    CT_GetClassRoomDBCount,20,767
+    CT_GetClassRoomDB,21,849
+    CT_GetGradeDBCount,22,923
+    CT_GetGradeDB,23,1003
+    CT_GetClassDBCount,24,1077
+    CT_GetClassDB,25,1142
+    CT_LoginClassRoom,26,1201
+    CT_LogoutClassRoom,27,1260
+    CT_GetStudentInfo,28,1331
+    CT_GetAllStudentInfoCount,29,1390
+    CT_GetAllStudentInfo,30,1467
+    CT_LeaveEarly,31,1532
+    ST_LeaveEarly,32,1579
+    CT_ConfirmLeaveEarly,33,1635
+    CT_GetTeacherInfo,34,1690
+    CT_LockStudent,35,1767
+    ST_LockStudent,36,1825
+    CT_SelectedClassRoom,37,1883
+    CT_CourseFinished,38,1909
+    ST_CourseFinished,39,1932
+    CT_ShowSpriteAnimation 43,1983
+    ST_ShowSpriteAnimation,44,2049
+    CT_ShowSpriteControl 46,2126
+    ST_ShowSpriteControl,47,2192
+    CT_ControlLevel,48,2264
+    ST_ControlLevel,49,2328
+    CT_Exercise_GameStart 51,2405
+    ST_Exercise_GameStart,52,2480
+    CT_Exercise_Play,53,2555
+    ST_Exercise_Play,54,2624
+    CT_Exercise_Pause,55,2693
+    ST_Exercise_Pause,56,2762
+    CT_Exercise_Stop,57,2831
+    ST_Exercise_Stop,58,2900
+    CT_Exercise_GameEnd,59,2969
+    ST_Exercise_GameEnd,60,3044
+    CT_Cartoon_GameStart 62,3120
+    ST_Cartoon_GameStart,63,3195
+    CT_Cartoon_Play,64,3264
+    ST_Cartoon_Play,65,3333
+    CT_Cartoon_Pause,66,3402
+    ST_Cartoon_Pause,67,3471
+    CT_Cartoon_Stop,68,3540
+    ST_Cartoon_Stop,69,3609
+    CT_Cartoon_GameEnd,70,3678
+    ST_Cartoon_GameEnd,71,3753
+    CT_BuildHouse_CaiHongXiaoWu 75,3855
+    ST_BuildHouse_CaiHongXiaoWu,76,3929
+    CT_BuildHouse_CaiHongGu,77,4009
+    ST_BuildHouse_CaiHongGu,78,4082
+    CT_BuildHouse_XiaoGuaiWu,79,4161
+    ST_BuildHouse_XiaoGuaiWu,80,4234
+    CT_BuildHouse_MuBu,81,4313
+    ST_BuildHouse_MuBu,82,4377
+    CT_BuildHouse_OperatorDemo,84,4448
+    ST_BuildHouse_OperatorDemo,85,4518
+    CT_BuildHouse_SingleMode,86,4603
+    ST_BuildHouse_SingleMode,87,4673
+    CT_BuildHouse_GroupMode,88,4776
+    ST_BuildHouse_GroupMode,89,4846
+    CT_BuildHouse_SetStuGroupCount,91,4935
+    CT_BuildHouse_SetStuGroup,92,4971
+    CT_BuildHouse_GetStuGroupCount,93,5048
+    CT_BuildHouse_GetStuGroup,94,5137
+    CT_BuildHouse_GameStart,95,5220
+    ST_BuildHouse_GameStart,96,5299
+    CT_BuildHouse_UpdatePos,98,5455
+    ST_BuildHouse_UpdatePos,99,5552
+    CT_BuildHouse_GameEnd,100,5632
+    ST_BuildHouse_GameEnd,101,5717
+    CT_BuildHouse_Save,102,5798
+    ST_BuildHouse_Show,103,5900
+    CT_BuildHouse_EmailTibet,104,5983
+    ST_BuildHouse_EmailTibet,105,6054
+    CT_BuildHouse_EmailAmerica,106,6131
+    ST_BuildHouse_EmailAmerica,107,6202
+    CT_BuildHouse_Activation,109,6280
+    ST_BuildHouse_Activation,110,6344
+    CT_BuildHouse_Role,111,6414
+    ST_BuildHouse_Role,112,6484
+    CT_BuildHouse_Stamp,113,6554
+    ST_BuildHouse_Stamp,114,6618
+    CT_BuildHouse_SaveHouse,115,6682
+    CT_Puzzle_GameStart 119,6779
+    ST_Puzzle_GameStart,120,6845
+    CT_Puzzle_IconStatus,122,7022
+    ST_Puzzle_IconStatus,123,7105
+    CT_Puzzle_Play,124,7188
+    ST_Puzzle_Play,125,7250
+    CT_Puzzle_Pause,126,7312
+    ST_Puzzle_Pause,127,7374
+    CT_Puzzle_MovePic,128,7436
+    ST_Puzzle_MovePic,129,7520
+    CT_Puzzle_DeletePic,130,7604
+    ST_Puzzle_DeletePic,131,7688
+    CT_Puzzle_AddPic,132,7772
+    ST_Puzzle_AddPic,133,7856
+    CT_Puzzle_CalcScore,134,7940
+    CT_Puzzle_EndGame,135,8006
+    ST_Puzzle_EndGame,136,8074
+struct sDBCount141,8208
+    int count;143,8226
+enum mClientType146,8245
+    MCT_STUDENT 148,8264
+    MCT_TEACHER,149,8285
+    MCT_WHITEBOARD,150,8302
+struct sLogin153,8326
+    int type;155,8342
+    char username[username156,8404
+    char password[password157,8427
+enum mLoginOutResult163,8495
+    RES_SUCCEED 165,8518
+    RES_FAIL,166,8539
+struct sLoginOutResult168,8556
+    int succeed;170,8581
+    char message[message171,8598
+struct sLogout177,8680
+    int type;179,8697
+struct sCourseGroup185,8804
+    char sCourseGroupName[sCourseGroupName187,8826
+struct sGetCourseDB194,8967
+    char sGradeName[sGradeName196,8989
+    char sGroupName[sGroupName197,9014
+    char sCourseName[sCourseName198,9039
+    int  iLanguage;199,9065
+    int  iArt;200,9085
+    int  iCommunity;201,9100
+    int  iHealth;202,9121
+    int  iScience;203,9139
+struct sGetGradeDB219,9767
+    char sGradeName[sGradeName221,9788
+struct sGetClassDB233,10029
+    char sClassName[sClassName235,10050
+struct sGetClassRoomDB248,10312
+    char sClassRoomName[sClassRoomName250,10337
+typedef struct sSelectedClassRoom{sSelectedClassRoom263,10568
+    unsigned int classroom_id;264,10603
+    mClientType client_type;265,10634
+}TSelectedClassRoom;TSelectedClassRoom266,10663
+struct sGetCourseItem268,10685
+    char sCourseName[sCourseName270,10709
+struct sCourseItem276,10796
+    char sCourseName[sCourseName278,10817
+    char sItemName[sItemName279,10843
+struct sLoginOutClassRoom295,11410
+    int  type;297,11438
+    char sTeacherName[sTeacherName298,11453
+    char sClassName[sClassName299,11480
+    char sClassRoomName[sClassRoomName300,11505
+struct sGetStudentDetailInfo307,11657
+    char sNumber[sNumber309,11688
+    char sFirstName[sFirstName310,11710
+    char sLastName[sLastName311,11735
+    char sSex[sSex312,11759
+    char sSchoolName[sSchoolName313,11777
+    char sGradeName[sGradeName314,11803
+    char sClassName[sClassName315,11828
+    char sAccount[sAccount316,11853
+    char birthday[birthday317,11876
+    char stFirstName[stFirstName318,11899
+    char stLastName[stLastName319,11925
+    int  iPicture_id;320,11950
+struct sGetAllStudentInfo333,13341
+    int iStudentId;335,13369
+    char sPicName[sPicName336,13389
+struct sLeaveEarly 348,13753
+    int student_id;354,13924
+enum ePuzzleType357,13948
+    PT_SQUARE 359,13967
+    PT_CIRCLE,360,13997
+struct sPuzzleGameStart363,14031
+    char type;365,14057
+    char size;366,14072
+struct sGetTeacherInfo378,14323
+    char sTeacherName[sTeacherName380,14348
+struct sControlLevel386,14438
+    int level;388,14461
+struct sBuildHouseCaiHongXiaoWu395,14606
+    char sText[sText397,14640
+struct sBuildHouseSetStuGroup404,14813
+    int  iGroupIndex;406,14845
+    int  iStudentCount;407,14867
+struct sBuildHouseStudentList409,14894
+    char sStudentName[sStudentName411,14926
+enum ePuzzleIconStatus418,15163
+    PIS_OK 420,15188
+    PIS_ERR,421,15204
+    PIS_WAIT,422,15217
+struct sPuzzleIconStatus424,15234
+    int status;426,15261
+enum ePuzzleActionTypePic435,15424
+    AP_MOVE 437,15452
+    AP_DELETE,438,15469
+    AP_ADD,439,15484
+struct sPuzzleUpdatePic442,15500
+    int action_type;444,15526
+    int pic_idx;445,15547
+    int x,446,15583
+    int x, y;446,15583
+typedef struct sSubmitData451,15622
+	unsigned int cLen;453,15651
+	enum CommandType cType;454,15695
+	void *cData(cData455,15739
+}MSG_HEAD;MSG_HEAD458,15815
+
+content/classmanager.cpp,265
+CClassManager* CClassManager::m_ClassManager 8,63
+CClassManager* CClassManager::getInstance 10,119
+int CClassManager::init(18,274
+int CClassManager::get_class_count(37,908
+CClass* CClassManager::get_class(41,985
+CClass* CClassManager::get_class_by_fd 49,1174
+
+content/teacher.h,245
+#define _C_TEACHER_H7,43
+using namespace std;20,237
+class CTeacher22,259
+	string      m_TeacherName;CTeacher::m_TeacherName28,353
+    string      m_Account;CTeacher::m_Account29,381
+    int         m_SocketFd;CTeacher::m_SocketFd30,408
+
+content/main.cpp,17
+int main 17,258
+
+content/grade.h,113
+#define _C_GRADE_H7,45
+using namespace std;17,207
+class cGrade19,231
+    string m_name;cGrade::m_name22,258
+
+content/teacher.cpp,330
+CTeacher::CTeacher(8,46
+void CTeacher::setSocket(12,73
+int CTeacher::getSocket(16,138
+bool CTeacher::inCourseList 21,204
+void CTeacher::addCourse 30,440
+bool CTeacher::delCourse 61,1297
+void CTeacher::setAccount 75,1656
+string CTeacher::getAccount 80,1738
+string CTeacher::getName 85,1800
+void CTeacher::setName 90,1869
+
+content/student.h,432
+#define _C_STUDENT_H7,49
+using namespace std;17,213
+class CStudent19,237
+	string      m_StuName;CStudent::m_StuName22,266
+	string      m_AccountName;CStudent::m_AccountName23,291
+	bool        m_onLine;CStudent::m_onLine24,320
+    int         m_Id;CStudent::m_Id25,344
+    int         m_Socket;CStudent::m_Socket26,367
+    string      m_picture_name;CStudent::m_picture_name27,394
+	CStudent CStudent::CStudent31,453
+
+content/class.cpp,476
+CClass::CClass(8,42
+int CClass::get_class_id(14,194
+void CClass::set_teacher_fd(18,249
+void CClass::set_white_fd(22,313
+void CClass::add_student(26,373
+CStudent* CClass::get_student_by_fd 30,493
+CTeacher* CClass::get_teacher_by_fd 39,684
+CCourse* CClass::get_course_by_name 47,825
+CCourse* CClass::get_course_by_id 57,1084
+void CClass::add_course 67,1318
+int CClass::get_teacher_fd 73,1434
+int CClass::get_white_fd 78,1500
+CClass* CClass::get_class_by_fd 83,1562
+
+content/student.cpp,452
+CStudent::CStudent 8,46
+CStudent::~CStudent 11,73
+void CStudent::setName 14,101
+string CStudent::getName 18,179
+void CStudent::setAccount 22,238
+string CStudent::getAccount 26,308
+void CStudent::setOnLine 30,374
+bool CStudent::getOnLine 34,431
+void CStudent::setId(38,489
+int CStudent::getId(42,538
+void CStudent::setSocket(46,582
+int CStudent::getSocket(50,643
+void CStudent::setPictureName 53,694
+string CStudent::getPictureName 58,776
+
+content/courseitem.cpp,129
+int CCourseItem::getId 4,26
+string CCourseItem::getName 9,82
+void CCourseItem::setId 14,145
+void CCourseItem::setName 19,202
+
+content/course.cpp,291
+CCourse :: CCourse 8,44
+CCourse :: ~CCourse 12,71
+void CCourse::setName 16,99
+string CCourse::getName 21,168
+CCourseItem* CCourse::get_item_by_id 26,223
+CCourseItem* CCourse::get_item_by_name 38,478
+void CCourse::add_item 50,741
+void CCourse::setId 60,889
+int CCourse::getId 65,951
+
+content/classmanager.h,475
+#define _C_CLASSMANAGER_H7,53
+using namespace std;19,232
+class CClassManager21,254
+    typedef map<int,CClassManager::int24,312
+    typedef map<int, CClass*> CLASSMAP;CClassManager::CLASSMAP24,312
+	~CClassManager CClassManager::~CClassManager28,404
+	CClassManager CClassManager::CClassManager38,552
+    CLASSMAP m_class_map;CClassManager::m_class_map39,573
+	static CClassManager* m_ClassManager;CClassManager::m_ClassManager40,599
+#define CLASSMANAGER 43,642
+
+content/room.cpp,175
+cRoom::cRoom(8,47
+cRoom::~cRoom 12,71
+string cRoom::getName 16,97
+void cRoom::setName 21,155
+string cRoom::getWhiteBoardName 26,227
+void cRoom::setWhiteBoardName 31,307
+
+content/class.h,638
+#define _C_CLASS_H7,45
+class CClass26,356
+	typedef map<int,CClass::int28,373
+	typedef map<int, CStudent*> STUDENTMAP;CClass::STUDENTMAP28,373
+    typedef list<CCourse*> COURSELIST;CClass::COURSELIST29,415
+    CTeacher m_teacher;CClass::m_teacher52,1011
+    int m_class_id;CClass::m_class_id53,1036
+    int m_teacher_fd;CClass::m_teacher_fd54,1057
+    int m_white_fd;CClass::m_white_fd55,1080
+    string m_class_name;CClass::m_class_name56,1101
+    string m_white_board;CClass::m_white_board57,1127
+    STUDENTMAP m_student_map;CClass::m_student_map58,1154
+    COURSELIST m_course_list;CClass::m_course_list59,1185
+
+content/courseitem.h,194
+#define _C_COURSE_ITEM_H3,26
+using namespace std;14,202
+class CCourseItem16,224
+        int   m_ItemId;CCourseItem::m_ItemId19,257
+        string m_itemName;CCourseItem::m_itemName20,281
+
+content/LoginCheck.h,58
+#define LOGIN_H_2,17
+class LoginCheck{LoginCheck10,179
+
+content/LoginCheck.cpp,211
+LoginCheck::LoginCheck(5,52
+LoginCheck::~LoginCheck(8,82
+void LoginCheck::check(11,113
+int LoginCheck::login_teacher(54,1368
+int LoginCheck::login_student(93,2684
+int LoginCheck::login_whiteboard(148,4733
+
+content/course.h,277
+#define _C_COURSE_H7,47
+using namespace std;19,237
+typedef list<CCourseItem*> COURSEITEMLIST;21,261
+class CCourse23,307
+    string m_name;CCourse::m_name26,335
+    int m_course_id;CCourse::m_course_id27,355
+    COURSEITEMLIST m_courseList;CCourse::m_courseList28,377
+
+content/grade.cpp,104
+cGrade::cGrade(8,49
+cGrade::~cGrade 12,75
+string cGrade::getName 16,103
+void cGrade::setName 21,168
+
+content/room.h,162
+#define _C_ROOM_H7,37
+using namespace std;17,188
+class cRoom19,210
+    string m_name;cRoom::m_name22,233
+    string m_whiteboard;cRoom::m_whiteboard23,252
+
+QueueT.h,412
+#define _QUEUET_H_7,74
+using namespace std;14,189
+class QueueT 21,296
+    QueueT(QueueT::QueueT26,363
+    ~QueueT(QueueT::~QueueT33,512
+    int dequeue(QueueT::dequeue44,787
+    int enqueue(QueueT::enqueue65,1370
+    size_t size(QueueT::size82,1775
+    pthread_mutex_t m_mutex;QueueT::m_mutex91,1967
+    pthread_cond_t m_con;QueueT::m_con93,2014
+    queue<TYPE> m_queue;QueueT::m_queue95,2055
+
+Buf.h,563
+#define _BUF_H_2,16
+class Buf 6,54
+    Buf(Buf::Buf8,74
+    ~Buf(Buf::~Buf13,168
+    void* ptr(Buf::ptr20,275
+    size_t setsize(Buf::setsize24,321
+    size_t maxsize(Buf::maxsize28,387
+    size_t size(Buf::size32,439
+    void reset(Buf::reset36,488
+    int getfd(Buf::getfd40,549
+    void setfd(Buf::setfd43,593
+    int getid(Buf::getid47,643
+    void setid(Buf::setid50,687
+    void* ptr_;Buf::ptr_54,745
+    size_t size_;Buf::size_55,761
+    size_t used_;Buf::used_56,779
+    int fd_;Buf::fd_57,797
+    int id_;Buf::id_58,810
+
+Single.h,390
+#define _GLOBAL_DATA_H_2,24
+class Single 9,165
+        QueueT<Buf*> recvqueue;Single::recvqueue13,252
+        QueueT<Buf*> sendqueue;Single::sendqueue14,284
+        PoolT<Buf> bufpool;Single::bufpool15,316
+        twomapT<Single::twomapT17,345
+        twomapT<int, int> map_id_fd;Single::map_id_fd17,345
+        static class Single* p_;Single::p_22,426
+#define SINGLE 24,462
+
+ProcessManager.cpp,225
+ProcessManager::ProcessManager(2,28
+ProcessManager::~ProcessManager(6,100
+int ProcessManager::process_logic(9,139
+void ProcessManager::sig_term(68,1710
+int ProcessManager::run(77,1866
+bool ProcessManager::lock(110,2726
+
+test/tst_GetCourseDBCount.cpp,43
+#define   STR_MAX 16,236
+int main 18,261
+
+test/teacher.cpp,67
+#define SERV_IP 14,234
+#define SERV_PORT 15,262
+int main(17,287
+
+Evloop.cpp,501
+struct ev_loop* Evloop::loop 3,21
+struct ev_io_info Evloop::ioarray[Evloop::ioarray4,58
+AtomicT<int> Evloop::clientcount;5,100
+Evloop::Evloop(7,135
+Evloop::~Evloop(19,417
+int Evloop::startlisten(23,462
+int Evloop::work(39,1011
+void Evloop::accept_cb(66,1579
+void Evloop::recv_cb(89,2232
+void Evloop::setnonblock(123,3234
+void Evloop::setreuseaddr(127,3330
+void Evloop::setnodelay 133,3459
+void Evloop::closefd(139,3593
+void Evloop::time_cb(149,3875
+int Evloop::getClientCount(163,4339
+
+task.h,171
+#define _TASK_H_2,17
+class task{task10,134
+        task(task::task12,158
+        virtual ~task(task::~task14,202
+        bool autorelease;task::autorelease17,307
+
+Config.cpp,135
+Config* Config::p_ 2,20
+Config* Config::instance(3,47
+Config::Config(10,150
+Config::~Config(13,175
+void Config::readconfig(16,197
+
+PoolT.h,401
+#define _POOLT_H_7,73
+using namespace std;14,187
+class PoolT 22,305
+    PoolT(PoolT::PoolT28,434
+    ~PoolT(PoolT::~PoolT38,658
+    TYPE* malloc(PoolT::malloc51,951
+    int free(PoolT::free64,1202
+    int size(PoolT::size73,1357
+    int used(PoolT::used80,1448
+    queue<TYPE*> queue_;PoolT::queue_86,1552
+    MutexLock lock_;PoolT::lock_87,1577
+    int size_;PoolT::size_88,1598
+
+database.cpp,295
+DataBase* DataBase::pinstance 9,124
+bool DataBase::Init(12,180
+DataBase::DataBase(28,716
+DataBase::~DataBase(31,761
+Connection* DataBase::getConnection(39,873
+Statement* DataBase::getStatement(43,937
+PreparedStatement* DataBase::preStatement(59,1227
+DataBase* DataBase::instance(63,1330
+
+RecvTask.h,57
+#define RECVTASK_H_2,20
+class RecvTask:RecvTask15,268

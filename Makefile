@@ -4,6 +4,22 @@ CFLAGS=-Wall -Werror -g
 LINKS	= -lpthread -lrt -lev -lglog -lmysqlcppconn -llua5.2
 
 OBJS	= ThreadPool.o \
+		  content/LoginCheck.o \
+          content/student.o \
+		  content/room.o \
+		  content/grade.o \
+          content/course.o \
+		  content/courseitem.o \
+		  content/roommanager.o \
+		  content/teacher.o \
+		  handler/HandleBuildHouse.o \
+		  handler/HandleClassRoom.o \
+		  handler/HandleMessage.o \
+		  handler/HandleSprite.o \
+		  handler/HandleCartoon.o \
+		  handler/HandleExercise.o \
+		  handler/HandlePuzzle.o \
+		  content/class.o \
 		  ProcessManager.o \
 		  Single.o \
 		  Sock.o \
@@ -12,21 +28,13 @@ OBJS	= ThreadPool.o \
 		  SendTask.o \
 		  database.o \
 		  Config.o \
-		  LoginCheck.o \
-          content/student.o \
-		  content/room.o \
-		  content/grade.o \
-          content/course.o \
-		  content/classmanager.o \
-		  content/teacher.o \
-		  content/class.o \
 		  main.o
 
 EXE=server
 
 VPATH		 = .
 
-INC=-I. -I./content
+INC=-I. -I./content -I./handler
 
 LIB=-L.
 
@@ -39,7 +47,7 @@ $(EXE):$(OBJS)
 		 $(CPP) $(CFLAGS) $(INC) -c $< -o $@
 
 %.o:%.c
-		 $(CC) $(CFLAGS) $(INC) -c $< -o $@
+		 $(CC)  $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
 	rm -rf $(OBJS) 
