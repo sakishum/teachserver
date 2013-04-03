@@ -13,7 +13,7 @@ CCourse :: ~CCourse ()
 {
 }
 
-void CCourse::setName (string& sName)
+void CCourse::setName (string sName)
 {
     this->m_name = sName;
 }

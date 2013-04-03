@@ -12,6 +12,7 @@ OBJS	= ThreadPool.o \
 		  content/courseitem.o \
 		  content/roommanager.o \
 		  content/teacher.o \
+		  content/game.o \
 		  handler/HandleBuildHouse.o \
 		  handler/HandleClassRoom.o \
 		  handler/HandleMessage.o \
@@ -19,7 +20,6 @@ OBJS	= ThreadPool.o \
 		  handler/HandleCartoon.o \
 		  handler/HandleExercise.o \
 		  handler/HandlePuzzle.o \
-		  content/class.o \
 		  ProcessManager.o \
 		  Single.o \
 		  Sock.o \

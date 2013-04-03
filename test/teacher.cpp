@@ -11,8 +11,11 @@
 
 
 #include "protocol.h"
-#define SERV_IP "127.0.0.1"
+#define SERV_IP "192.168.0.166"
 #define SERV_PORT 9999 
+void login(int fd);
+void loginclassroom(int fd);
+void send_CT_ShowSpriteAnimation(int fd);
 
 int main(int argc, char* argv[]){
     int cntFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -23,8 +26,20 @@ int main(int argc, char* argv[]){
     addr.sin_port = htons(SERV_PORT);
 
     connect(cntFd, (struct sockaddr*)&addr, sizeof(struct sockaddr));
-    char buf[1024] = {0};
 
+    //login(cntFd);
+    loginclassroom(cntFd);
+    sleep(3);
+    send_CT_ShowSpriteAnimation(cntFd);
+    sleep(100);
+
+
+    close(cntFd);
+    return 0;
+}
+
+void login(int fd) {
+    char buf[1024] = {0};
     MSG_HEAD head;
     struct sLogin loginreq;
     loginreq.type = MCT_TEACHER;
@@ -36,18 +51,39 @@ int main(int argc, char* argv[]){
     head.cType = CT_Login;
     memcpy(buf, &head, sizeof(MSG_HEAD));
     memcpy(buf + sizeof(MSG_HEAD), &loginreq, sizeof(struct sLogin));
-    send( cntFd, buf, head.cLen, 0);
+    send( fd, buf, head.cLen, 0);
 
     memset(buf, '\0', 1024);
 
-    recv(cntFd, buf, 1024, 0);
+    recv(fd, buf, 1024, 0);
                     //CT_LoginReuslt
     MSG_HEAD* x = (MSG_HEAD*)buf;
 
     struct sLoginOutResult loginresp;
     memcpy(&loginresp, buf + sizeof(MSG_HEAD), sizeof(loginresp));
     printf("%d  %s\n", loginresp.succeed, loginresp.message);
+}
 
-    close(cntFd);
-    return 0;
+void loginclassroom(int fd) {
+    char buf[1024] = {0};
+    MSG_HEAD head;
+    head.cLen = sizeof(MSG_HEAD) + sizeof(struct sLoginOutClassRoom);
+    head.cType = CT_LoginClassRoom;
+
+    struct sLoginOutClassRoom loginclassroom;
+    
+    snprintf(loginclassroom.sTeacherName,sizeof(loginclassroom.sTeacherName), "%s","");
+    snprintf(loginclassroom.sClassName, sizeof(loginclassroom.sClassName), "%s", "A教室");
+    snprintf(loginclassroom.sClassRoomName, sizeof(loginclassroom.sClassRoomName), "%s", "A教室");
+
+    memcpy(buf, &head, sizeof(MSG_HEAD));
+    memcpy(buf + sizeof(MSG_HEAD), &loginclassroom, sizeof(struct sLoginOutClassRoom));
+    send( fd, buf, head.cLen, 0);
+}
+
+void send_CT_ShowSpriteAnimation(int fd) {
+    MSG_HEAD head;
+    head.cLen = sizeof(MSG_HEAD);
+    head.cType = CT_ShowSpriteAnimation;
+    send(fd, &head, head.cLen, 0);
 }

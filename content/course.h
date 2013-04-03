@@ -34,7 +34,7 @@ public:
     CCourseItem* get_item_by_name (string name);
     void add_item (CCourseItem *);
 
-    void setName (string& sName);
+    void setName (string sName);
     string getName (void);
 
     void setId (int id);

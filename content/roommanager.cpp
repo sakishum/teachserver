@@ -21,7 +21,7 @@ int CRoomManager::init() {
         ResultSet* prst = pstmt->executeQuery (); 
         while (prst->next ()) {
             CRoom* p = new CRoom(prst->getInt("classroom_id"),
-                    prst->getString("roomroom_name"),
+                    prst->getString("classroom_name"),
                     prst->getString("white_board"));
             m_room_map.insert(pair<int, CRoom*>(p->get_room_id(), p));
         }   
@@ -53,10 +53,27 @@ CRoom* CRoomManager::get_room_by_fd (int fd)
 
     for (it = m_room_map.begin (); it != m_room_map.end (); it++) {
         pRoom = it->second->get_room_by_fd (fd);
-        if (NULL == pRoom) {
-            printf("get room error!\n");
+        if (NULL != pRoom) {
+            return pRoom;
         }
-        return pRoom;
     }
     return NULL;
+}
+
+CRoom* CRoomManager::get_room_by_name (string name) {
+    ROOMMAP::iterator it;
+
+    for (it = m_room_map.begin (); it != m_room_map.end (); it++) {
+        if (name == it->second->get_room_name()) {
+            return it->second;
+        }
+    }
+    return NULL;
+}
+
+void CRoomManager::del_client(int fd) {
+    ROOMMAP::iterator it;
+    for(it = m_room_map.begin(); it != m_room_map.end(); ++it) {
+        it->second->del_client(fd);
+    }
 }

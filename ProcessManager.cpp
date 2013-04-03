@@ -1,6 +1,7 @@
 #include "ProcessManager.h"
 ProcessManager::ProcessManager() { 
-  thrpool_ = new ThreadPool(10);
+    thrpool_ = new ThreadPool(10);
+    lockfd_ = 0;
 }
 
 ProcessManager::~ProcessManager() {

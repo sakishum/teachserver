@@ -10,7 +10,7 @@ LoginCheck::~LoginCheck() {
 void LoginCheck::check(Buf* pbuf) {
     struct sLogin login;
     memcpy(&login, ((MSG_HEAD*)pbuf->ptr())->cData(), sizeof(login));
-    printf ("%s, %s\n", login.username, login.password);
+    printf ("username = [%s], password = [%s]\n", login.username, login.password);
     int result = 0;
 
     switch(login.type) {
@@ -53,19 +53,19 @@ void LoginCheck::check(Buf* pbuf) {
 int LoginCheck::login_teacher(int fd, struct sLogin login) {
     string strpwd;
     string Account;
-    string fName;
-    string lName;
-    int id = 0;
     try {
+        MutexLockGuard guard(DATABASE->m_mutex);
         PreparedStatement* pstmt = DATABASE->preStatement (SQL_SELECT_TEACHER);
         pstmt->setString (1, login.username);
         ResultSet* prst = pstmt->executeQuery ();
         while (prst->next ()) {
             strpwd = prst->getString ("password");
-            id = prst->getInt("teacher_id");
+#if 0
+            //id = prst->getInt("teacher_id");
             Account = prst->getString("account");
             Account = prst->getString("first_name");
             Account = prst->getString("last_name");
+#endif
         }
         delete prst;
         delete pstmt;
@@ -73,17 +73,7 @@ int LoginCheck::login_teacher(int fd, struct sLogin login) {
     }
 
     if ((strcmp (login.password, strpwd.c_str()) == 0) && (!strlen (login.password))) {
-        SINGLE->map_id_fd.insert(id, fd);
         printf("teacher: login success!\n"); // ADD student_name to CLASS
-        //CLASSMANAGER->enterRoom (NULL, NULL, login.username, NULL); // Create CLASS AND ADD teacher_name to CLASS
- #if 0
-        cClass* pclass = new cClass();
-        pclass->getTeacher()->setAccount(Account);
-        pclass->getTeacher()->setSocket(fd);
-        pclass->getTeacher()->setName(fName, lName);
-        CLASSMANAGER->addClass(pclass);
-#endif
-
         return 0;
     }
     return -1;
@@ -95,15 +85,16 @@ int LoginCheck::login_student(int fd, struct sLogin login) {
     string strLastName;
     string strAccount;
     string strPictureName;
-    //int id = 0;
+    int id = 0;
     try {
+        MutexLockGuard guard(DATABASE->m_mutex);
         PreparedStatement* pstmt = DATABASE->preStatement(SQL_SELECT_STU);
         pstmt->setString(1, login.username);
         pstmt->setString(2, login.password);
         ResultSet* prst = pstmt->executeQuery();
         while(prst->next()) {
             strpwd = prst->getString("password");
-            //id = prst->getInt("student_id");
+            id = prst->getInt("student_id");
             strFirstName = prst->getString("first_name");
             strLastName = prst->getString("last_name");
             strAccount = prst->getString ("account");
@@ -111,26 +102,21 @@ int LoginCheck::login_student(int fd, struct sLogin login) {
         }
         delete prst;
         delete pstmt;
-#if 0
-        cStudent* pstudent = new cStudent();
-        pstudent->setId(id);
-        pstudent->setSocket(fd);
-        pstudent->setName(strLastName, strFirstName);
-        CLASSMANAGER->findClass()->addStudent(pstudent);
-#endif
     }
     catch(SQLException e) {
+        printf("[%s] %s\n",__FUNCTION__, e.what());
     }
 
-    if ((0 == strcmp(login.password, strpwd.c_str())) && (!strlen (login.password))) {
+    if ( 0 == strncmp(login.password, strpwd.c_str(), strpwd.size())) {
         printf("student: login success!\n"); // ADD student_name to CLASS
-        //SINGLE->map_id_fd.insert(id, fd);
-#if 0
-        // find class by student fd
-        CClass* pClass = CLASSMANAGER->get_class_by_fd (fd);
-        if (pClass == NULL)
+
+        CRoom* pClass = ROOMMANAGER->get_room_by_fd (fd);
+        if (pClass == NULL) {
             LOG(ERROR) << "in login_student function. error: not found CLASS in CLASSMANAGER with fd" << endl;
-        // add student to studentlist of CLASS
+            return -1;
+        }
+
+        printf("room[%p] get a sutdent\n", pClass);
         CStudent* pStudent = pClass->get_student_by_fd (fd);
         if (pStudent == NULL)
             LOG(ERROR) << "in login_student function. error: not found STUDENT in CLASSMANGER with fd" << endl;
@@ -139,15 +125,17 @@ int LoginCheck::login_student(int fd, struct sLogin login) {
         pStudent->setId (id);
         pStudent->setPictureName (strPictureName);
         pStudent->setOnLine (true);
-#endif
+
         return 0;
     }
+    printf("login failed: [%s][%s]", login.password, strpwd.c_str());
     return -1;
 }
 
 int LoginCheck::login_whiteboard(int fd, struct sLogin login) {
     string roomName;
     try {
+        MutexLockGuard guard(DATABASE->m_mutex);
         PreparedStatement* pstmt = DATABASE->preStatement (SQL_SELECT_CLASSROOM1);
         pstmt->setString (1, login.username);
         ResultSet* prst = pstmt->executeQuery ();

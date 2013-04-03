@@ -32,6 +32,8 @@ public:
     CRoom* get_room(int id);
 
     CRoom* get_room_by_fd (int fd);
+    CRoom* get_room_by_name (string name);
+    void del_client(int fd);
 
 
 private:

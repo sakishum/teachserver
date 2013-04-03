@@ -15,6 +15,22 @@ OBJS	= twomapT_unittest.o \
 		  ../RecvTask.o \
 		  ../SendTask.o \
 		  ../database.o \
+		  ../handler/HandleBuildHouse.o \
+		  ../handler/HandleCartoon.o \
+		  ../handler/HandleClassRoom.o \
+		  ../handler/HandleExercise.o \
+		  ../handler/HandleMessage.o \
+		  ../handler/HandlePuzzle.o \
+		  ../handler/HandleSprite.o \
+		  ../content/LoginCheck.o \
+		  ../content/class.o \
+		  ../content/course.o \
+		  ../content/courseitem.o \
+		  ../content/grade.o \
+		  ../content/room.o \
+		  ../content/roommanager.o \
+		  ../content/student.o \
+		  ../content/teacher.o \
 		  ../Config.o \
 		  gtest_main.o
 #Evloop_unittest.o \
@@ -25,6 +41,8 @@ VPATH		 = ./../
 
 INC=-I.\
 	-I./../ \
+	-I./../content \
+	-I./../handler \
 	-I$(HOME)/Downloads/gtest-1.6.0/include
 
 LIB=-L.\
@@ -51,3 +69,4 @@ clean:
 	rm -rf core*
 	rm -rf logs
 	rm -f .lock
+	rm *.out
