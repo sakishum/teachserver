@@ -433,8 +433,9 @@ void CHandleMessage::handleCourseFinished (Buf* p)
 void CHandleMessage::handleDBRecordFinished (Buf* p)
 {
     cout << "CT_GetDBRecordFinished and ST_GetDBRecordFinished" << endl;
-    if (p == NULL);
+    if (p == NULL) {
         return;
+    }
 #if 0
     MSG_HEAD* head = (MSG_HEAD*)p->ptr();
     struct sDBRecordFinished finished;
